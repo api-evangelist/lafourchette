@@ -1,0 +1,59 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for TheFork POS API v1
+  version: 1.0.0
+extends: openapi/lafourchette-pos-api-openapi.yml
+x-generated: '2026-08-17'
+x-method: generated
+x-source: >-
+  API Evangelist enrichment pass. Adds the operating detail TheFork documents in prose on the POS
+  pages but never puts in the contract — the money representation, the inbound callback the vendor
+  must serve, and the fact that every operation description in the published spec is just its own
+  operationId.
+actions:
+- target: $.info
+  update:
+    x-apievangelist-profile: https://apis.io/provider/lafourchette
+    x-apievangelist-enriched: '2026-08-17'
+    x-known-gaps:
+    - every operation description is a repeat of the operationId
+    - no error responses declared; 400/401/404/415/500 exist only in prose
+    - no components.schemas; all schemas inline
+- target: $.info
+  update:
+    x-money:
+      representation: minor units
+      note: totalAmount and each line totalPrice are multiplied by 100 (7600 = 76.00)
+      currency_field: currency (ISO 4217)
+- target: $.info
+  update:
+    x-inbound-callback:
+      name: receiptOpeningUrl
+      direction: TheFork -> POS vendor
+      registered_via: postV1Create
+      trigger: diner marked ARRIVED or SEATED in TheFork Manager
+      auth: 'Authorization: Bearer <oauthClientSecret>'
+      routing_header: 'CustomerId: TheFork restaurant UUID'
+      docs: https://docs.thefork.io/POS-API/Flow/create-order
+      note: the POS must serve this endpoint; it is half the integration and is absent from the contract
+- target: $.paths['/v1/create'].post
+  update:
+    x-lifecycle:
+      creates_state: PENDING
+      activation: manual, after a joint test session with TheFork developers and QA
+      returns: uuid (the POS instance) and consumerId (the POS company) — store both
+- target: $.paths['/v1/orders/{orderUuid}'].put
+  update:
+    x-semantics:
+      success_status: 204 with an empty body
+      split_bill: send one order carrying the total, never one per split
+      orderUuid: the identifier TheFork sent on the order-open callback
+      docs: https://docs.thefork.io/POS-API/Flow/close-order
+- target: $.paths['/v1/{posUuid}/logo'].put
+  update:
+    x-constraints:
+      content_type: multipart/form-data
+      format: PNG
+      min_width_px: 300
+      max_size_kb: 100
+      errors: 400, 401, 404, 415, 500

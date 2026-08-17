@@ -1,25 +1,164 @@
 aid: lafourchette
 name: LaFourchette
-description: 'LaFourchette is a company surfaced as a portfolio company of serena and added to the API
-  Evangelist network as a stub for enrichment. Sector: consumer. This profile is a lead awaiting the enrichment
-  pipeline.'
+description: 'LA FOURCHETTE SAS, trading as TheFork, is the European restaurant-booking and restaurant-management
+  platform founded in Paris in 2007 and acquired by TripAdvisor in 2014. It runs the consumer marketplace
+  at thefork.com across a dozen European markets and the TheFork Manager (TFM) SaaS that restaurants use
+  for reservations, table and floor management, reviews, loyalty ("Yums"), preset menus and payments.
+  Its developer surface is published at docs.thefork.io and consists of two REST APIs: the B2B / Partners
+  API (api.thefork.io/manager) used by restaurant groups, CRM platforms and booking-funnel partners to
+  read customers, reservations and reviews and to drive availabilities, offers, timeslots and reservation
+  lifecycle; and the POS API v1 (api.thefork.io/pos) used by point-of-sale vendors to register a POS instance
+  and push closed-bill data back onto a reservation. A push webhook flow delivers customer, reservation
+  and review events to partner endpoints. Credentials are issued by the integrations team; the B2B API
+  uses an Auth0 client-credentials access token and the POS API an X-Api-Key header.'
+image: https://docs.thefork.io/img/thefork_logo_2023_secondary.svg
 url: https://raw.githubusercontent.com/api-evangelist/lafourchette/refs/heads/main/apis.yml
 x-type: company
 x-source: serena-portfolio
-x-tier: stub
-x-tier-reason: portfolio-lead
 specificationVersion: '0.20'
 created: '2026-08-17'
 modified: '2026-08-17'
 tags:
 - Company
 - Consumer
-apis: []
+- Restaurants
+- Reservations
+- Booking
+- Hospitality
+- Point of Sale
+- Reviews
+- Marketplace
+- Travel and Dining
+- Webhooks
+- France
+apis:
+- aid: lafourchette:thefork-b2b-api
+  name: TheFork B2B API
+  description: Partners API for TheFork Manager. Read customers, reservations and reviews; drive the booking
+    funnel with availabilities, offers, party sizes and timeslots; create, update and cancel reservations;
+    reply to reviews; and post call-centre caller recognitions. Access is granted by TheFork's integrations
+    team and authenticated with an Auth0 client-credentials access token presented as a bearer token against
+    audience https://api.thefork.io.
+  humanURL: https://docs.thefork.io/B2B-API/introduction
+  baseURL: https://api.thefork.io/manager
+  tags:
+  - reservations
+  - customers
+  - reviews
+  - booking-funnel
+  - availability
+  - crm
+  properties:
+  - type: Documentation
+    url: https://docs.thefork.io/B2B-API/introduction
+  - type: APIReference
+    url: https://docs.thefork.io/B2B-API/API%20specifications/get-v-1-customers
+  - type: OpenAPI
+    url: openapi/lafourchette-b2b-api-openapi.yml
+  - type: Overlay
+    url: overlays/lafourchette-b2b-api-overlay.yaml
+  - type: Authentication
+    url: https://docs.thefork.io/B2B-API/authentication
+  - type: Webhooks
+    url: https://docs.thefork.io/B2B-API/event-webhook-flow
+- aid: lafourchette:thefork-pos-api
+  name: TheFork POS API v1
+  description: Point-of-sale integration API for TheFork Manager. A POS vendor registers its POS instance,
+    uploads a logo, receives an order-open webhook when a diner is seated, and closes the order back to
+    TheFork with the bill lines, currency and total so spend data is attached to the reservation. Authenticated
+    with an API key in the X-Api-Key header.
+  humanURL: https://docs.thefork.io/POS-API/introduction
+  baseURL: https://api.thefork.io/pos
+  tags:
+  - point-of-sale
+  - orders
+  - billing
+  - reservations
+  properties:
+  - type: Documentation
+    url: https://docs.thefork.io/POS-API/introduction
+  - type: APIReference
+    url: https://docs.thefork.io/POS-API/API%20specifications/tfm-pos-api-v-1
+  - type: OpenAPI
+    url: openapi/lafourchette-pos-api-openapi.yml
+  - type: Overlay
+    url: overlays/lafourchette-pos-api-overlay.yaml
+  - type: GettingStarted
+    url: https://docs.thefork.io/POS-API/how-it-works
+  - type: Webhooks
+    url: https://docs.thefork.io/POS-API/Flow/create-order
 maintainers:
 - FN: Kin Lane
   email: kin@apievangelist.com
 - FN: APIs.json
   email: info@apis.io
 common:
+- type: AgenticAccess
+  url: agentic-access/lafourchette-agentic-access.yml
+- type: DomainSecurity
+  url: security/lafourchette-domain-security.yml
+- type: Authentication
+  url: authentication/lafourchette-authentication.yml
 - type: Website
-  url: http://www.lafourchette.com/
+  url: https://www.thefork.com/
+- type: DeveloperPortal
+  url: https://docs.thefork.io/
+- type: Documentation
+  url: https://docs.thefork.io/getting-started
+- type: APIReference
+  url: https://docs.thefork.io/B2B-API/API%20specifications/get-v-1-customers
+- type: GettingStarted
+  url: https://docs.thefork.io/getting-started
+- type: BestPractices
+  url: https://docs.thefork.io/best-practices
+- type: Support
+  url: https://support.theforkmanager.com/s/?language=en_GB
+- type: GitHubOrganization
+  url: https://github.com/lafourchette
+- type: Pricing
+  url: https://www.theforkmanager.com/en/restaurant-software-price
+- type: SignUp
+  url: https://www.theforkmanager.com/en/
+- type: TermsOfService
+  url: https://docs.thefork.io/pdf/LaFourchette-Partners-API-Licence-2.pdf
+- type: PrivacyPolicy
+  url: https://www.thefork.com/legal
+- type: Packages
+  url: packages/lafourchette-packages.yml
+- type: WellKnown
+  url: well-known/lafourchette-well-known.yml
+- type: MCPServer
+  url: mcp/lafourchette-mcp.yml
+- type: LLMsTxt
+  url: llms/lafourchette-llms.txt
+- type: Conformance
+  url: conformance/lafourchette-conformance.yml
+- type: ErrorCatalog
+  url: errors/lafourchette-problem-types.yml
+- type: Lifecycle
+  url: lifecycle/lafourchette-lifecycle.yml
+- type: Deprecation
+  url: https://docs.thefork.io/getting-started
+- type: OAuthScopes
+  url: scopes/lafourchette-scopes.yml
+- type: Sandbox
+  url: sandbox/lafourchette-sandbox.yml
+- type: Conventions
+  url: conventions/lafourchette-conventions.yml
+- type: ChangeLog
+  url: changelog/lafourchette-changelog.yml
+- type: DataModel
+  url: data-model/lafourchette-data-model.yml
+- type: Webhooks
+  url: asyncapi/lafourchette-webhooks.yml
+- type: AgentSkill
+  url: skills/_index.yml
+- type: Plans
+  url: plans/lafourchette-plans-pricing.yml
+- type: RateLimits
+  url: rate-limits/lafourchette-rate-limits.yml
+x-enrichment:
+  date: '2026-08-17'
+  status: enriched
+  artifacts_added: 27
+  pass: local-v1

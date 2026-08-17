@@ -1,0 +1,37 @@
+generated: '2026-08-17'
+method: searched
+source: https://docs.thefork.io/getting-started
+docs: https://docs.thefork.io/B2B-API/introduction
+limit_count: 0
+note: >-
+  TheFork states, in identical wording on the Getting started page and on both API introductions,
+  that "rate limiting is currently enforced at the default level as outlined in your contract" and
+  invites partners to negotiate a revision. No number, no window, no scope and no response headers
+  are published anywhere in the developer portal, so an integrator cannot size a workload — or an
+  agent budget a call sequence — without first signing a contract. What IS published is the failure
+  signal: HTTP 429 is listed as a global error both APIs can return on any endpoint.
+limits: []
+exhaustion:
+  status_code: 429
+  error_label: Rate limit
+  body_shape: '{ statusCode, error }'
+  documented_at: https://docs.thefork.io/getting-started
+response_headers:
+  published: false
+  x_ratelimit: null
+  ratelimit_rfc9239: null
+  retry_after: null
+  note: no rate-limit response header is documented; unverifiable anonymously because api.thefork.io answers 403 to every unauthenticated request
+client_guidance:
+  source: https://docs.thefork.io/best-practices
+  points:
+  - handle rate-limit errors gracefully
+  - implement retry logic with exponential backoff for transient errors and rate limiting
+  - cache to reduce call frequency, and page large datasets
+x-evidence:
+- url: https://docs.thefork.io/getting-started
+  status: 200
+- url: https://docs.thefork.io/B2B-API/introduction
+  status: 200
+- url: https://api.thefork.io/manager/v1/reservations
+  status: 401

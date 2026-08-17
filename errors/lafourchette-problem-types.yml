@@ -1,0 +1,149 @@
+generated: '2026-08-17'
+method: derived
+source: openapi/lafourchette-b2b-api-openapi.yml
+docs: https://docs.thefork.io/getting-started
+format: custom-envelope
+rfc9457: false
+note: >-
+  TheFork does not use RFC 9457 problem+json. Every documented error is application/json with a
+  three-field envelope, and the machine-actionable value is the string in data.code. The 4xx
+  responses below are derived from the response schemas TheFork publishes per operation (each error
+  schema pins error and data.code to a single-value enum, which is how the specific codes were
+  recovered); 429 and 500 come from the global error section of the Getting started page. The
+  response descriptions in the contract are all the boilerplate "Object with user data." — including
+  on the error responses — which is a documentation defect on TheFork's side, not a transcription
+  error here. The POS API v1 documents its error codes only in prose (400/401/404/415/500) and
+  declares no error responses at all in its published operation objects.
+envelope:
+  media_type: application/json
+  fields:
+    statusCode: numeric HTTP status, repeated in the body
+    error: HTTP reason phrase (Bad Request, Unauthorized, Not Found, Conflict)
+    data.code: stable machine-readable error code; empty string on 401
+  example: |
+    {
+      "statusCode": 401,
+      "error": "Unauthorized"
+    }
+problems:
+- status: 400
+  code: CANCELLATION_ERROR
+  error: Bad Request
+  title: Reservation cannot be cancelled
+  api: TheFork B2B API
+  source_operations:
+  - patchV1ReservationsIdCancel
+- status: 400
+  code: REVIEW_HAS_NO_PUBLISHED_COMMENT
+  error: Bad Request
+  title: Review has no published comment to reply to
+  api: TheFork B2B API
+  source_operations:
+  - putV1ReviewsIdReply
+- status: 401
+  code: ''
+  error: Unauthorized
+  title: Invalid or expired API key / bearer token
+  remediation: >-
+    For the B2B API, mint a fresh Auth0 client-credentials token at
+    https://auth.thefork.io/oauth/token (tokens live 8600s); for the POS API check the X-Api-Key
+    header. Returned by every one of the 18 B2B operations.
+  api: TheFork B2B API
+  global: true
+  source_operations: all
+- status: 404
+  code: CUSTOMER_NOT_FOUND
+  error: Not Found
+  title: Customer not found
+  api: TheFork B2B API
+  source_operations:
+  - getV1CustomersId
+- status: 404
+  code: PHONE_NUMBER_NOT_FOUND
+  error: Not Found
+  title: No customer matches that phone number
+  api: TheFork B2B API
+  source_operations:
+  - getV1RestaurantsIdCustomersPhonePhoneNumber
+- status: 404
+  code: RESERVATION_NOT_FOUND
+  error: Not Found
+  title: Reservation not found
+  api: TheFork B2B API
+  source_operations:
+  - getV1ReservationsId
+  - patchV1ReservationsId
+  - patchV1ReservationsIdCancel
+- status: 404
+  code: RESTAURANT_NOT_FOUND
+  error: Not Found
+  title: Restaurant not found
+  api: TheFork B2B API
+  source_operations:
+  - getV1RestaurantsIdOffers
+  - getV1RestaurantsIdPartySizes
+  - getV1RestaurantsIdTimeslots
+  - putV1RestaurantsIdAvailabilitiesOverride
+- status: 404
+  code: Restaurant not found
+  error: Not Found
+  title: Restaurant not found (inconsistent code casing)
+  note: >-
+    Reservation creation returns the human sentence "Restaurant not found" where every other 404
+    returns an UPPER_SNAKE code such as RESTAURANT_NOT_FOUND. A client matching on data.code must
+    special-case this operation.
+  api: TheFork B2B API
+  source_operations:
+  - postV1RestaurantsIdReservations
+- status: 404
+  code: REVIEW_NOT_FOUND
+  error: Not Found
+  title: Review not found
+  api: TheFork B2B API
+  source_operations:
+  - getV1ReviewsId
+  - putV1ReviewsIdReply
+- status: 409
+  code: DOUBLE_BOOKING
+  error: Conflict
+  title: Slot is no longer available / duplicate booking
+  remediation: Re-read availabilities or timeslots and retry with a fresh slot.
+  api: TheFork B2B API
+  source_operations:
+  - getV1RestaurantsIdAvailabilities
+  - postV1RestaurantsIdReservations
+  - patchV1ReservationsId
+- status: 409
+  code: DOUBLE_CANCELLATION
+  error: Conflict
+  title: Reservation has already been cancelled
+  remediation: Treat as terminal success; the reservation is already in CANCELED state.
+  api: TheFork B2B API
+  source_operations:
+  - patchV1ReservationsIdCancel
+- status: 415
+  code: null
+  error: Unsupported Media Type
+  title: Wrong Content-Type
+  api: TheFork POS API v1
+  documented_in: https://docs.thefork.io/POS-API/First%20setup/update-logo
+  note: prose-only; not present in the published operation objects
+- status: 429
+  code: null
+  error: Too Many Requests
+  title: Rate limit exceeded
+  remediation: Back off exponentially. Limits are contractual and not published numerically.
+  global: true
+  documented_in: https://docs.thefork.io/getting-started
+- status: 500
+  code: null
+  error: Internal server error
+  title: Internal server error
+  global: true
+  documented_in: https://docs.thefork.io/getting-started
+  example: |
+    { "statusCode": 500, "error": "Internal server error" }
+counts:
+  problems: 14
+  distinct_codes: 9
+  apis_covered: 2

@@ -1,0 +1,92 @@
+generated: '2026-08-17'
+method: derived
+status: candidate
+source: openapi/lafourchette-b2b-api-openapi.yml
+note: >-
+  TheFork publishes no MCP server. Searches of the docs portal, the lafourchette GitHub org, npm and
+  the MCP registries return only third-party Apify scrapers of the thefork.com consumer site, which
+  are not TheFork's and do not use this API. The tool list below is a CANDIDATE derived from the 18
+  B2B operations TheFork does publish — every tool names a real operationId, and each one's input
+  schema is that operation's parameters/requestBody in openapi/lafourchette-b2b-api-openapi.yml. It
+  is a design sketch for what an MCP surface over this API would look like, not a server anyone can
+  call today.
+deployment:
+  mode: none
+  endpoint: null
+  install: null
+  package: null
+  auth: oauth
+  verified: derived
+server:
+  name: thefork-b2b
+  transport: null
+  url: null
+tools:
+- name: list_reservations
+  description: List reservation UUIDs for a restaurant or group over a date range
+  source_operation: openapi/lafourchette-b2b-api-openapi.yml#getV1Reservations
+- name: get_reservation
+  description: Get full reservation details by UUID
+  source_operation: openapi/lafourchette-b2b-api-openapi.yml#getV1ReservationsId
+- name: create_reservation
+  description: Create a reservation at a restaurant
+  consequence: write
+  source_operation: openapi/lafourchette-b2b-api-openapi.yml#postV1RestaurantsIdReservations
+- name: update_reservation
+  description: Update a reservation meal date and party size
+  consequence: write
+  source_operation: openapi/lafourchette-b2b-api-openapi.yml#patchV1ReservationsId
+- name: cancel_reservation
+  description: Cancel a reservation
+  consequence: write
+  source_operation: openapi/lafourchette-b2b-api-openapi.yml#patchV1ReservationsIdCancel
+- name: get_availabilities
+  description: Get availabilities for a restaurant over a date range
+  source_operation: openapi/lafourchette-b2b-api-openapi.yml#getV1RestaurantsIdAvailabilities
+- name: override_availabilities
+  description: Override online availability for a restaurant, date and time range
+  consequence: write
+  source_operation: openapi/lafourchette-b2b-api-openapi.yml#putV1RestaurantsIdAvailabilitiesOverride
+- name: get_timeslots
+  description: Get bookable time slots for a restaurant on a date
+  source_operation: openapi/lafourchette-b2b-api-openapi.yml#getV1RestaurantsIdTimeslots
+- name: get_party_sizes
+  description: Get party sizes with availability on a date
+  source_operation: openapi/lafourchette-b2b-api-openapi.yml#getV1RestaurantsIdPartySizes
+- name: get_offers
+  description: Get preset menus and offers for a restaurant
+  source_operation: openapi/lafourchette-b2b-api-openapi.yml#getV1RestaurantsIdOffers
+- name: list_customers
+  description: List customer UUIDs created or updated between two dates
+  source_operation: openapi/lafourchette-b2b-api-openapi.yml#getV1Customers
+- name: get_customer
+  description: Get customer details including allergies, dietary restrictions and seating preferences
+  source_operation: openapi/lafourchette-b2b-api-openapi.yml#getV1CustomersId
+- name: find_customer_by_phone
+  description: Look up a customer at a restaurant by phone number
+  source_operation: openapi/lafourchette-b2b-api-openapi.yml#getV1RestaurantsIdCustomersPhonePhoneNumber
+- name: list_reviews
+  description: List moderated review UUIDs created or updated between two dates
+  source_operation: openapi/lafourchette-b2b-api-openapi.yml#getV1Reviews
+- name: get_review
+  description: Get review details by UUID
+  source_operation: openapi/lafourchette-b2b-api-openapi.yml#getV1ReviewsId
+- name: reply_to_review
+  description: Create or update the restaurant reply to a published review comment
+  consequence: write
+  source_operation: openapi/lafourchette-b2b-api-openapi.yml#putV1ReviewsIdReply
+- name: record_call_recognition
+  description: Create a new phone call or mark an ongoing call as finished
+  consequence: write
+  source_operation: openapi/lafourchette-b2b-api-openapi.yml#postV1CallCenterCallRecognitions
+- name: update_integration_status
+  description: Update integration status for a restaurant
+  consequence: write
+  source_operation: openapi/lafourchette-b2b-api-openapi.yml#patchV1IntegrationStatus
+searched:
+- query: TheFork MCP server / model context protocol
+  finding: only third-party Apify scrapers of thefork.com; no first-party server
+- query: npm @thefork, @lafourchette
+  finding: placeholder dummy packages only
+- source: https://docs.thefork.io/sitemap.xml
+  finding: 37 URLs, no MCP or agent page

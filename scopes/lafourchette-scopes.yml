@@ -1,0 +1,56 @@
+generated: '2026-08-17'
+method: probed
+source: https://auth.thefork.io/.well-known/openid-configuration
+docs: https://docs.thefork.io/B2B-API/authentication
+note: >-
+  TheFork's B2B API authenticates with an Auth0 client-credentials grant against audience
+  https://api.thefork.io. TheFork documents NO API-specific scopes and its published operation
+  objects carry no oauth2 securityScheme, so there is no scope reference page to harvest — entitlements
+  are set per partner contract when the integrations team issues the client_id/client_secret. The
+  scopes listed below are the standard OIDC identity scopes advertised by the Auth0 tenant's own
+  discovery document; they are recorded because they were probed, not because they gate the B2B API.
+  Treat scope granularity for this API as: none published.
+schemes:
+- name: Auth0ClientCredentials
+  source: https://docs.thefork.io/B2B-API/authentication
+  flows:
+  - flow: clientCredentials
+    tokenUrl: https://auth.thefork.io/oauth/token
+    audience: https://api.thefork.io
+    scopes: {}
+api_scopes_published: false
+api_scope_count: 0
+tenant_scopes_supported:
+- scope: openid
+  kind: oidc-identity
+- scope: profile
+  kind: oidc-identity
+- scope: offline_access
+  kind: oidc-identity
+- scope: name
+  kind: oidc-identity
+- scope: given_name
+  kind: oidc-identity
+- scope: family_name
+  kind: oidc-identity
+- scope: nickname
+  kind: oidc-identity
+- scope: email
+  kind: oidc-identity
+- scope: email_verified
+  kind: oidc-identity
+- scope: picture
+  kind: oidc-identity
+- scope: created_at
+  kind: oidc-identity
+- scope: identities
+  kind: oidc-identity
+- scope: phone
+  kind: oidc-identity
+- scope: address
+  kind: oidc-identity
+x-evidence:
+- url: https://auth.thefork.io/.well-known/openid-configuration
+  status: 200
+- url: https://docs.thefork.io/B2B-API/authentication
+  status: 200

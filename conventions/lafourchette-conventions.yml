@@ -1,0 +1,98 @@
+generated: '2026-08-17'
+method: searched
+source: https://docs.thefork.io/getting-started
+sources:
+- https://docs.thefork.io/getting-started
+- https://docs.thefork.io/preliminary-steps
+- https://docs.thefork.io/best-practices
+- https://docs.thefork.io/B2B-API/introduction
+- https://docs.thefork.io/B2B-API/authentication
+- openapi/lafourchette-b2b-api-openapi.yml
+- openapi/lafourchette-pos-api-openapi.yml
+authentication:
+  b2b: OAuth 2.0 client-credentials (Auth0, auth.thefork.io) -> Authorization Bearer, TTL 8600s
+  pos: API key in the X-Api-Key header
+  inbound_to_partner: Bearer <oauthClientSecret> plus a CustomerId header carrying the restaurant UUID
+  see: authentication/lafourchette-authentication.yml
+idempotency:
+  supported: false
+  key_header: null
+  note: >-
+    TheFork publishes no idempotency key, no request-replay window and no safe-retry contract on
+    either API. This matters here more than on most APIs: postV1RestaurantsIdReservations creates a
+    real restaurant reservation and the only collision signal is a 409 DOUBLE_BOOKING, so a client
+    that retries a timed-out create has no published way to tell a duplicate from a new booking.
+pagination:
+  style: page-number
+  applies_to:
+  - getV1Customers
+  - getV1Reservations
+  - getV1Reviews
+  request_params:
+  - name: page
+    type: number
+    default: 1
+    minimum: 1
+  - name: limit
+    type: number
+    default: 100
+    maximum: 10000
+  response_fields:
+  - data
+  - totalCount
+  - page
+  - limit
+  note: >-
+    List endpoints return an array of UUIDs in data, not full objects. The documented pattern is
+    list-then-fetch — page the UUID list, then call the /{id} detail operation per record. There are
+    no cursors and no Link headers.
+filtering:
+  date_range: startDate + endDate are required on the reservation and review list operations
+  filter_by: filterBy selects which date field the range applies to (updatedDate default, or mealDate)
+  scope: every list operation requires either groupUuid or restaurantUuid
+expansion:
+  supported: false
+metadata:
+  supported: false
+request_tracing:
+  request_id_header: null
+  documented: false
+versioning:
+  scheme: uri-path
+  current: v1
+  policy: >-
+    One version for the whole API, not one per endpoint. Any breaking change to the contract of one
+    or more endpoints introduces a new API version, and the previous version is supported for a
+    further 6 months.
+  docs: https://docs.thefork.io/getting-started
+  see: lifecycle/lafourchette-lifecycle.yml
+error_envelope:
+  media_type: application/json
+  shape: '{ statusCode, error, data: { code } }'
+  rfc9457: false
+  see: errors/lafourchette-problem-types.yml
+rate_limit_signaling:
+  status_on_exhaustion: 429
+  response_headers: none published
+  limits_published: false
+  note: limits are set per partner contract; see rate-limits/lafourchette-rate-limits.yml
+identifiers:
+  style: UUID v4 for every entity (customer, reservation, review, restaurant, group, order, POS instance)
+  path_params: '{id} on B2B restaurant/reservation/review paths; {orderUuid} and {posUuid} on POS'
+  note: >-
+    The POS integration turns on a CustomerId header that carries TheFork's restaurant UUID and
+    identifies which restaurant an order belongs to.
+money:
+  representation: minor units (integers). Bill totals, line totals and loyalty amounts are multiplied by 100.
+  currency_field: currency (ISO 4217) on the POS close-order payload
+  docs: https://docs.thefork.io/POS-API/Flow/close-order
+webhooks:
+  see: asyncapi/lafourchette-webhooks.yml
+  ack_contract: respond 200 with an empty JSON object ({"data":{}}) within a few seconds; TheFork retries on timeout
+client_guidance:
+  documented_at: https://docs.thefork.io/best-practices
+  points:
+  - HTTPS only
+  - retry transient errors and 429s with exponential backoff
+  - keep response handling under 3 seconds
+  - page large datasets and request only the fields needed

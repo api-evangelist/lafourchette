@@ -1,0 +1,63 @@
+generated: '2026-08-17'
+method: searched
+source: openapi/lafourchette-pos-api-openapi.yml
+docs: https://docs.thefork.io/preliminary-steps
+note: >-
+  Two APIs, two different auth models, and they are documented in different places. The POS API v1
+  declares its scheme in the contract itself (apiKey, header X-Api-Key). The B2B API does NOT declare
+  any securityScheme in the operation objects TheFork publishes — its authentication exists only in
+  prose on the docs pages, which is a real gap in the machine-readable contract and is recorded here
+  rather than patched into the spec. Credentials for both are issued by TheFork's integrations team
+  (integrations@thefork.com); there is no self-serve key issuance.
+summary:
+  types:
+  - apiKey
+  - oauth2
+  api_key_in:
+  - header
+  oauth2_flows:
+  - clientCredentials
+  self_serve: false
+  credential_issuance: manual, by TheFork integrations team (integrations@thefork.com)
+schemes:
+- name: ApiKeyAuth
+  api: TheFork POS API v1
+  type: apiKey
+  in: header
+  parameter: X-Api-Key
+  declared_in_spec: true
+  sources:
+  - openapi/lafourchette-pos-api-openapi.yml
+- name: Auth0ClientCredentials
+  api: TheFork B2B API
+  type: oauth2
+  flow: clientCredentials
+  declared_in_spec: false
+  token_url: https://auth.thefork.io/oauth/token
+  audience: https://api.thefork.io
+  token_type: Bearer
+  token_ttl_seconds: 8600
+  presented_as: 'Authorization: Bearer <access_token>'
+  provider: Auth0 (custom domain auth.thefork.io)
+  discovery: well-known/lafourchette-openid-configuration.json
+  docs: https://docs.thefork.io/B2B-API/authentication
+  sources:
+  - https://docs.thefork.io/B2B-API/authentication
+  - https://docs.thefork.io/preliminary-steps
+  - https://auth.thefork.io/.well-known/openid-configuration
+  notes:
+  - TheFork's docs explicitly warn against requesting a new token before the previous one expires.
+- name: PosOutboundBearer
+  api: TheFork POS API v1 (calls TheFork makes TO the POS)
+  direction: inbound-to-partner
+  type: http
+  scheme: bearer
+  declared_in_spec: false
+  note: >-
+    The POS vendor generates a secret (oauthClientSecret) and registers it with TheFork; TheFork then
+    presents it as a bearer token, plus a CustomerId header carrying the restaurant UUID, on every
+    call it makes to the POS receiptOpeningUrl and oauthTokenUrl.
+  docs: https://docs.thefork.io/preliminary-steps
+  sources:
+  - https://docs.thefork.io/preliminary-steps
+  - https://docs.thefork.io/POS-API/goto-production

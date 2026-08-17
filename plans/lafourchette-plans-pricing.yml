@@ -1,0 +1,53 @@
+generated: '2026-08-17'
+method: searched
+source: https://www.theforkmanager.com/en/restaurant-software-price
+plan_count: 2
+api_pricing_published: false
+note: >-
+  TheFork publishes plans for TheFork Manager, the restaurant SaaS the APIs serve — not for API
+  access. Neither plan carries a number: both are "ask for pricing", and the revenue model is a
+  commission expressed as a percentage of the average bill per guest on reservations sourced from
+  TheFork, Tripadvisor and partner sites, with bookings taken through the restaurant's own website
+  and social channels commission-free. API access itself is not a purchasable line item: partners and
+  POS vendors obtain credentials from integrations@thefork.com under a partner contract, and rate
+  limits are set in that contract. There is no self-serve tier, no free tier and no published
+  per-call pricing.
+plans:
+- name: Performance
+  badge: Most popular
+  price: null
+  currency: null
+  billing_period: null
+  pricing_model: commission on reservations, as a percentage of average bill per guest
+  quota: null
+  overage: null
+  includes:
+  - commission-free bookings from the restaurant's own website and social media
+  - credit-card guarantees and pre-payments
+  - SMS reconfirmation
+  - onboarding training
+  - dedicated account manager
+  - 7-day customer support
+- name: Enterprise
+  price: null
+  currency: null
+  billing_period: null
+  pricing_model: commission on reservations, as a percentage of average bill per guest
+  quota: null
+  overage: null
+  includes:
+  - everything in Performance
+  - centralised multi-venue analytics
+  - group-level features
+  - tailored email campaigns
+  - extended integrations
+api_access:
+  self_serve: false
+  contact: integrations@thefork.com
+  requirement: company name plus a description of the use case, then approval
+  terms: https://docs.thefork.io/pdf/LaFourchette-Partners-API-Licence-2.pdf
+x-evidence:
+- url: https://www.theforkmanager.com/en/restaurant-software-price
+  status: 200
+- url: https://docs.thefork.io/preliminary-steps
+  status: 200

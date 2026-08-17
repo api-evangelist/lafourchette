@@ -1,0 +1,288 @@
+openapi: 3.0.3
+info:
+  title: TheFork POS API v1
+  version: 1.0.0
+  description: TheFork (LA FOURCHETTE SAS) POS API v1 for connecting a point-of-sale system to TheFork Manager (TFM). A POS
+    company registers its instance, uploads a logo, and closes orders back to TheFork with the bill lines and total so spend
+    data is attached to the reservation. Authenticated with an API key in the X-Api-Key header.
+  contact:
+    name: TheFork integrations team
+    email: integrations@thefork.com
+    url: https://docs.thefork.io/
+  termsOfService: https://docs.thefork.io/pdf/LaFourchette-Partners-API-Licence-2.pdf
+  x-provenance: Reconstructed by API Evangelist from the OpenAPI operation objects TheFork itself publishes in the compiled
+    assets of its Docusaurus developer portal (docs.thefork.io, docusaurus-plugin-openapi-docs). TheFork does not serve a
+    single downloadable OpenAPI document at any probed URL; every path, operationId, parameter, request body, response and
+    schema below is verbatim provider content decoded from those published page bundles. Nothing here was authored by API
+    Evangelist.
+  x-source-title: TFM POS API v1
+servers:
+- url: https://api.thefork.io/pos
+tags:
+- name: v1
+paths:
+  /v1/create:
+    post:
+      operationId: postV1Create
+      tags:
+      - v1
+      description: postV1Create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                homepageUrl:
+                  type: string
+                name:
+                  type: string
+                oauthAuthorizeUrl:
+                  type: string
+                oauthClientId:
+                  type: string
+                oauthClientSecret:
+                  type: string
+                oauthScope:
+                  type: array
+                  items:
+                    type: string
+                oauthTokenUrl:
+                  type: string
+                receiptOpeningUrl:
+                  type: string
+                type:
+                  type: string
+                webhookToken:
+                  type: string
+              required:
+              - homepageUrl
+              - name
+              - type
+      responses:
+        '200':
+          description: Successful
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  type:
+                    type: string
+                  homepageUrl:
+                    type: string
+                  receiptOpeningUrl:
+                    type: string
+                  oauthAuthorizeUrl:
+                    type: string
+                  oauthTokenUrl:
+                    type: string
+                  oauthScope:
+                    type: array
+                    items:
+                      type: string
+                  availableOn:
+                    type: array
+                    items:
+                      type: string
+                  logoPath:
+                    type: string
+                  uuid:
+                    type: string
+      security:
+      - ApiKeyAuth: []
+      x-source-page: https://docs.thefork.io/POS-API/API specifications/post-v-1-create-404
+      x-source-asset: https://docs.thefork.io/assets/js/7041dc0c.3707238c.js
+  /v1/orders/{orderUuid}:
+    put:
+      operationId: putV1OrdersOrderuuid
+      tags:
+      - v1
+      description: putV1OrdersOrderuuid
+      parameters:
+      - description: Order UUID
+        x-format:
+          guid: true
+        name: orderUuid
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                locale:
+                  type: string
+                  description: Order locale
+                currency:
+                  type: string
+                  description: Order currency
+                totalAmount:
+                  type: number
+                  description: Order total amount
+                lines:
+                  type: array
+                  description: Order Lines
+                  items:
+                    type: object
+                    properties:
+                      label:
+                        type: string
+                        description: Order line label
+                        maxLength: 500
+                      category:
+                        type: string
+                        description: Order line category
+                        maxLength: 260
+                      totalPrice:
+                        type: number
+                        description: Order line total price
+                      quantity:
+                        type: number
+                        description: Order line quantity
+                    required:
+                    - label
+                    - category
+                    - totalPrice
+                    - quantity
+              required:
+              - locale
+              - currency
+              - totalAmount
+              - lines
+      responses:
+        '200':
+          description: Successful
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  id:
+                    type: number
+                    x-constraint:
+                      positive: true
+                  pos:
+                    type: string
+                  reservationUuid:
+                    type: string
+                  posId:
+                    type: number
+                    x-constraint:
+                      positive: true
+                  status:
+                    type: string
+                  orderUuid:
+                    type: string
+                  currencyIso:
+                    type: string
+                  posTableRestaurantUuid:
+                    type: string
+                  mealDate:
+                    type: string
+                  mealDateTime:
+                    type: string
+                  externalId:
+                    type: number
+                  externalOrderId:
+                    type: string
+                  totalPrice:
+                    type: number
+                    enum:
+                    - 0
+                    x-constraint:
+                      positive: true
+                  readyToPayNotificationDispatchedAt:
+                    type: string
+                  externalReservationId:
+                    type: string
+                  orderLines:
+                    type: array
+                    description: Order lines / cannot be typed because pos-service does not confirm the structure
+                    items:
+                      type: string
+                  orderPayments:
+                    type: array
+                    items:
+                      type: string
+                required:
+                - id
+                - posId
+                - status
+                - orderUuid
+                - currencyIso
+                - mealDate
+      security:
+      - ApiKeyAuth: []
+      x-source-page: https://docs.thefork.io/POS-API/API specifications/put-v-1-orders-orderuuid-e50
+      x-source-asset: https://docs.thefork.io/assets/js/d9f95ff6.22e0183b.js
+  /v1/{posUuid}/logo:
+    put:
+      operationId: putV1PosuuidLogo
+      tags:
+      - v1
+      description: putV1PosuuidLogo
+      parameters:
+      - description: POS UUID
+        x-format:
+          guid: true
+        name: posUuid
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                logo:
+                  type: string
+      responses:
+        '200':
+          description: Successful
+          content:
+            '*/*':
+              schema:
+                type: object
+                properties:
+                  name:
+                    type: string
+                  uuid:
+                    type: string
+                  type:
+                    type: string
+                  homepageUrl:
+                    type: string
+                  receiptOpeningUrl:
+                    type: string
+                  oauthAuthorizeUrl:
+                    type: string
+                  oauthTokenUrl:
+                    type: string
+                  oauthScope:
+                    type: array
+                    items:
+                      type: string
+                  availableOn:
+                    type: array
+                    items:
+                      type: string
+                  logoPath:
+                    type: string
+      security:
+      - ApiKeyAuth: []
+      x-source-page: https://docs.thefork.io/POS-API/API specifications/put-v-1-posuuid-logo-bf5
+      x-source-asset: https://docs.thefork.io/assets/js/19816ad5.b282cb0e.js
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      name: X-Api-Key
+      in: header

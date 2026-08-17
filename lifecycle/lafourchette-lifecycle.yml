@@ -1,0 +1,64 @@
+generated: '2026-08-17'
+method: searched
+source: https://docs.thefork.io/getting-started
+versioning:
+  scheme: uri-path
+  current: v1
+  granularity: whole-API (one version for every endpoint, not per endpoint)
+  docs: https://docs.thefork.io/getting-started
+deprecation:
+  policy_published: true
+  policy_url: https://docs.thefork.io/getting-started
+  policy: >-
+    Any breaking change to the contract of one or more endpoints introduces a new API version. The
+    previous version stops being supported after 6 months.
+  support_window_months: 6
+  sunset_header: false
+  deprecation_header: false
+  rfc8594: false
+  note: >-
+    The window is stated in prose only — TheFork advertises no Sunset or Deprecation response header,
+    publishes no dated deprecation notice page, and gives no channel on which a version retirement is
+    announced. A partner learns the clock has started from the contract, not from the API.
+deprecated_fields:
+- field: customerName
+  api: TheFork POS API v1
+  replacement: customer.firstName + customer.lastName
+  source: https://docs.thefork.io/POS-API/Flow/create-order
+- field: customerUuid
+  api: TheFork POS API v1
+  replacement: customer.id
+  source: https://docs.thefork.io/POS-API/Flow/create-order
+- field: offerName
+  api: TheFork POS API v1
+  replacement: offer.name
+  source: https://docs.thefork.io/POS-API/Flow/create-order
+- field: updatedAt
+  api: TheFork POS API v1
+  replacement: null
+  source: https://docs.thefork.io/POS-API/Flow/create-order
+deprecated_operations: []
+sla:
+  url: null
+  uptime_target: null
+  note: No public SLA. Availability commitments sit inside the partner contract.
+status_page:
+  public: false
+  probed:
+  - url: https://thefork.statuspage.io
+    status: 200
+    finding: >-
+      Atlassian Statuspage exists for the tenant but is INACTIVE — "This page is currently inactive
+      and can only be viewed by team members."
+  - url: https://status.thefork.io
+    status: 301
+    finding: redirects to https://rootly.com/account/status-pages/thefork-status-page/private (private page)
+  - url: https://status.thefork.com
+    status: NXDOMAIN
+  note: >-
+    TheFork operates status tooling on both Atlassian Statuspage and Rootly, but neither page is
+    published. There is no public incident or uptime surface for these APIs.
+support:
+  channel: integrations@thefork.com (credential issuance and integration questions)
+  help_center: https://support.theforkmanager.com/s/?language=en_GB
+  note: no developer forum, no public issue tracker, no community channel

@@ -1,0 +1,157 @@
+generated: '2026-08-17'
+method: derived
+source: openapi/lafourchette-b2b-api-openapi.yml
+sources:
+- openapi/lafourchette-b2b-api-openapi.yml
+- openapi/lafourchette-pos-api-openapi.yml
+- https://docs.thefork.io/POS-API/Flow/create-order
+note: >-
+  Derived from the response schemas TheFork publishes and from the UUID reference fields that link
+  them. The model is entirely inline — the published operation objects declare no components.schemas
+  and no $ref anywhere, so every entity below is re-used by shape, not by reference. Identifiers are
+  UUID v4 across the board, and each entity names its own key field (reservationUuid, customerUuid,
+  reviewUuid) rather than a generic id.
+identifiers:
+  style: UUID v4
+  prefixes: none
+  path_param_names: '{id} (context-dependent), {phoneNumber}, {orderUuid}, {posUuid}'
+entities:
+- name: Group
+  key: groupUuid
+  description: Restaurant group / brand. The top scope for list operations and webhook events.
+  read_operations: []
+  note: never returned as an object; appears only as a scoping parameter and a webhook field
+- name: Restaurant
+  key: restaurantUuid
+  description: A single venue. Scope for availabilities, offers, timeslots, party sizes and reservations.
+  read_operations: []
+  note: no GET /restaurants/{id} exists; restaurants are addressed but never retrievable as objects
+- name: Reservation
+  key: reservationUuid
+  description: A booking, its meal date, party size, channel, status, notes, offer and bill amount.
+  read_operations: [getV1Reservations, getV1ReservationsId]
+  write_operations: [postV1RestaurantsIdReservations, patchV1ReservationsId, patchV1ReservationsIdCancel]
+  fields_of_note: [mealDate, mealStatus, partySize, status, reservationChannel, billAmount, customFields, utmTrackingInformation]
+  enums:
+    status: [RECORDED, CANCELED, NO_SHOW, REQUESTED, REFUSED]
+- name: Customer
+  key: customerUuid
+  description: >-
+    Diner profile, and by far the richest object in the API — contact details, locale, VIP and rank
+    flags, allergies and intolerances, dietary restrictions, spending behaviour, relationship and risk
+    tags, seating and food preferences, marketing opt-ins and custom fields.
+  read_operations: [getV1Customers, getV1CustomersId, getV1RestaurantsIdCustomersPhonePhoneNumber]
+  fields_of_note: [allergiesAndIntolerances, dietaryRestrictions, spendingBehaviour, riskLevel, isVip, computedRank, optins]
+- name: Review
+  key: reviewUuid
+  description: Moderated diner review with rating, comment, experience detail and restaurant reply.
+  read_operations: [getV1Reviews, getV1ReviewsId]
+  write_operations: [putV1ReviewsIdReply]
+  nested: [reservation, customer, dinerRating, comment, experienceDetail, restaurantReply]
+- name: Offer
+  key: uuid
+  description: Preset menu or promotion attached to a restaurant, with name, description and price.
+  read_operations: [getV1RestaurantsIdOffers]
+- name: Availability
+  key: date
+  description: Per-date stock signal for a restaurant, with the offers available that day.
+  read_operations: [getV1RestaurantsIdAvailabilities]
+  write_operations: [putV1RestaurantsIdAvailabilitiesOverride]
+- name: Timeslot
+  key: datetime
+  description: Bookable time on a date, with offers, stock flag and payment-guarantee requirements.
+  read_operations: [getV1RestaurantsIdTimeslots]
+- name: PartySize
+  description: Party sizes with availability for a restaurant on a date.
+  read_operations: [getV1RestaurantsIdPartySizes]
+- name: CallRecognition
+  description: Inbound phone call recorded against a restaurant, opened and later marked finished.
+  write_operations: [postV1CallCenterCallRecognitions]
+- name: PosInstance
+  key: uuid
+  api: TheFork POS API v1
+  description: A POS vendor's registered instance, with its callback URLs and shared secret.
+  write_operations: [postV1Create, putV1PosuuidLogo]
+  fields_of_note: [name, homepageUrl, receiptOpeningUrl, oauthTokenUrl, oauthClientSecret, type, consumerId]
+- name: Order
+  key: orderId / orderUuid
+  api: TheFork POS API v1
+  description: The bill opened when a diner is seated and closed with lines, currency and total.
+  write_operations: [putV1OrdersOrderuuid]
+  fields_of_note: [locale, currency, totalAmount, lines, loyaltyAmount, prepayment]
+  money: minor units — totalAmount and line totalPrice are multiplied by 100
+- name: OrderLine
+  api: TheFork POS API v1
+  description: One billed item.
+  fields: [label, category, totalPrice, quantity]
+relationships:
+- from: Restaurant
+  to: Group
+  type: belongs_to
+  via: groupUuid
+- from: Reservation
+  to: Restaurant
+  type: belongs_to
+  via: restaurantUuid
+- from: Reservation
+  to: Customer
+  type: belongs_to
+  via: customerUuid
+- from: Reservation
+  to: Offer
+  type: has_one
+  via: offerUuid
+- from: Review
+  to: Restaurant
+  type: belongs_to
+  via: restaurantUuid
+- from: Review
+  to: Reservation
+  type: belongs_to
+  via: reservation (nested object) / reservationUuid on the webhook payload
+- from: Review
+  to: Customer
+  type: belongs_to
+  via: customer (nested object)
+- from: Offer
+  to: Restaurant
+  type: belongs_to
+  via: path scope /v1/restaurants/{id}/offers
+- from: Availability
+  to: Offer
+  type: has_many
+  via: offerList
+- from: Timeslot
+  to: Offer
+  type: has_many
+  via: offers
+- from: Customer
+  to: Restaurant
+  type: belongs_to
+  via: originRestaurantUuid
+- from: Order
+  to: Reservation
+  type: belongs_to
+  via: TheFork attaches the closed bill to the reservation that opened it
+- from: Order
+  to: OrderLine
+  type: has_many
+  via: lines
+- from: Order
+  to: Customer
+  type: has_one
+  via: customer.id
+- from: PosInstance
+  to: Restaurant
+  type: has_many
+  via: CustomerId header (TheFork restaurant UUID) presented on every call to the POS
+access_pattern:
+  shape: list-then-fetch
+  detail: >-
+    getV1Customers, getV1Reservations and getV1Reviews return arrays of UUIDs plus totalCount/page/limit
+    — not objects. Every field above is only reachable through the matching /{id} detail call, so a
+    full sync is 1 + N requests per page.
+counts:
+  entities: 13
+  relationships: 15
+  operations_covered: 21

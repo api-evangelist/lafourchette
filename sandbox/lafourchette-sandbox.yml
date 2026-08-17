@@ -1,0 +1,48 @@
+generated: '2026-08-17'
+method: searched
+source: https://docs.thefork.io/POS-API/First%20setup/create-pos
+docs:
+- https://docs.thefork.io/POS-API/First%20setup/create-pos
+- https://docs.thefork.io/POS-API/First%20setup/update-logo
+- https://docs.thefork.io/POS-API/goto-production
+- https://docs.thefork.io/POS-API/introduction
+self_serve: false
+test_live_separation: state-based, not key-based
+note: >-
+  There is no sandbox an integrator can enter on their own. TheFork's model is a supervised test
+  phase inside production: a newly created POS instance lands in PENDING state on the production
+  environment, and TheFork hand-creates a test restaurant, then sends the restaurant URL and TheFork
+  Manager credentials through a secure channel. The vendor develops against that, TheFork's
+  developers and QA run a joint test session, and only on a pass is the instance activated and an
+  activation button added to the TFM Integrations page. No test API keys, no magic identifiers, no
+  test cards, no fixture or trigger tooling and no time simulation are published. One pre-production
+  host does appear in the docs — https://api.preprod.thefork.io — but only inside a curl example on
+  the logo page; it is never named, described or granted anywhere in the portal, so treat it as
+  observed-but-undocumented rather than an offered sandbox.
+environments:
+- name: production
+  base_urls:
+  - https://api.thefork.io/manager
+  - https://api.thefork.io/pos
+  auth: live credentials issued by integrations@thefork.com
+- name: pre-production
+  base_urls:
+  - https://api.preprod.thefork.io/pos
+  status: undocumented
+  evidence: >-
+    appears only in the request example on
+    https://docs.thefork.io/POS-API/First%20setup/update-logo
+    ("--url https://api.preprod.thefork.io/pos/v1/${UUID}/logo")
+  note: no access instructions, no credentials path, and no mention on any other page
+test_credentials:
+  published: false
+  test_key_prefix: null
+  test_cards: null
+  magic_values: null
+  time_simulation: null
+lifecycle:
+  states:
+  - PENDING (POS instance created, awaiting TheFork validation)
+  - ACTIVE (validated by TheFork developers and QA, activation button added to TFM Integrations)
+  test_restaurant: created by TheFork on request; URL and TFM credentials delivered via a secure channel
+  go_live: https://docs.thefork.io/POS-API/goto-production

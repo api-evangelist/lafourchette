@@ -1,0 +1,77 @@
+overlay: 1.0.0
+info:
+  title: API Evangelist enhancements for TheFork B2B API
+  version: 1.0.0
+extends: openapi/lafourchette-b2b-api-openapi.yml
+x-generated: '2026-08-17'
+x-method: generated
+x-source: >-
+  API Evangelist enrichment pass. Captures our annotations over TheFork's own operation objects
+  without mutating the reconstructed contract, and records the two gaps a consumer hits first: the
+  B2B API declares no securityScheme even though every operation needs an Auth0 bearer token, and
+  every response description — success and error alike — is the boilerplate "Object with user data."
+actions:
+- target: $.info
+  update:
+    x-apievangelist-profile: https://apis.io/provider/lafourchette
+    x-apievangelist-enriched: '2026-08-17'
+    x-contract-source: >-
+      Operation objects decoded from the published docs.thefork.io Docusaurus build; no OpenAPI
+      document is served by TheFork at any fetchable URL.
+- target: $.info
+  update:
+    x-auth-note: >-
+      Not declared in the contract. Every operation requires an Auth0 client-credentials access token
+      (POST https://auth.thefork.io/oauth/token, audience https://api.thefork.io) presented as
+      'Authorization: Bearer <access_token>'. Tokens live 8600 seconds.
+- target: $.info
+  update:
+    x-known-gaps:
+    - no securitySchemes declared
+    - no components.schemas; every schema is inline and re-used by shape only
+    - every response description is the boilerplate "Object with user data."
+    - no idempotency key on any write operation, including reservation creation
+    - no rate-limit values or headers published
+- target: $.paths['/v1/reservations'].get
+  update:
+    x-pagination:
+      style: page-number
+      params: [page, limit]
+      response_fields: [data, totalCount, page, limit]
+      returns: array of UUIDs; call getV1ReservationsId per record
+- target: $.paths['/v1/customers'].get
+  update:
+    x-pagination:
+      style: page-number
+      params: [page, limit]
+      response_fields: [data, totalCount, page, limit]
+      returns: array of UUIDs; call getV1CustomersId per record
+- target: $.paths['/v1/reviews'].get
+  update:
+    x-pagination:
+      style: page-number
+      params: [page, limit]
+      response_fields: [data, totalCount, page, limit]
+      returns: array of UUIDs; call getV1ReviewsId per record
+- target: $.paths['/v1/restaurants/{id}/reservations'].post
+  update:
+    x-idempotency:
+      supported: false
+      collision_signal: 409 DOUBLE_BOOKING
+      warning: >-
+        No idempotency key exists. A retried create after a timeout cannot be distinguished from a new
+        booking; re-read availabilities before retrying.
+- target: $.paths['/v1/reservations/{id}/cancel'].patch
+  update:
+    x-idempotency:
+      supported: false
+      repeat_signal: 409 DOUBLE_CANCELLATION
+      guidance: treat DOUBLE_CANCELLATION as terminal success
+- target: $.paths['/v1/customers/{id}'].get
+  update:
+    x-data-sensitivity:
+      classification: special-category-adjacent
+      fields: [allergiesAndIntolerances, dietaryRestrictions, riskLevel, birthDate, phone, email, optins]
+      note: >-
+        Health-adjacent and marketing-consent data about named diners. Handle under the partner
+        contract's data-processing terms; TheFork publishes no data-processing documentation for the API.

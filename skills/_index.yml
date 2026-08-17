@@ -1,0 +1,36 @@
+generated: '2026-08-17'
+method: generated
+source: openapi/lafourchette-b2b-api-openapi.yml, openapi/lafourchette-pos-api-openapi.yml, https://docs.thefork.io/
+note: >-
+  TheFork publishes no AGENTS.md or skill files of its own. These three are generated from the
+  operation objects TheFork publishes plus the prose rules on its docs pages; every operationId named
+  in them exists verbatim in the specs in openapi/.
+skills:
+- file: lafourchette-book-a-table.md
+  name: Book a table through TheFork
+  api: openapi/lafourchette-b2b-api-openapi.yml
+  operations:
+  - getV1RestaurantsIdAvailabilities
+  - getV1RestaurantsIdPartySizes
+  - getV1RestaurantsIdTimeslots
+  - getV1RestaurantsIdOffers
+  - postV1RestaurantsIdReservations
+  - patchV1ReservationsId
+  - patchV1ReservationsIdCancel
+  - getV1ReservationsId
+- file: lafourchette-sync-guests-and-reservations.md
+  name: Sync guests and reservations into a CRM
+  api: openapi/lafourchette-b2b-api-openapi.yml
+  operations:
+  - getV1Customers
+  - getV1CustomersId
+  - getV1Reservations
+  - getV1ReservationsId
+  - getV1RestaurantsIdCustomersPhonePhoneNumber
+- file: lafourchette-connect-a-pos.md
+  name: Connect a POS to TheFork Manager
+  api: openapi/lafourchette-pos-api-openapi.yml
+  operations:
+  - postV1Create
+  - putV1PosuuidLogo
+  - putV1OrdersOrderuuid

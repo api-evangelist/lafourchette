@@ -1,0 +1,55 @@
+generated: '2026-08-17'
+method: searched
+source: https://www.theforkmanager.com/en/software-updates
+scope: product
+api_changelog_published: false
+note: >-
+  TheFork publishes a "Software updates" page for TheFork Manager and claims more than 60 new
+  features a year. It is a product release page, not an API changelog: entries are labelled by season
+  or month ("March updates", "November updates", "Summer updates") with no ISO date, no version
+  number, no breaking-change marker and no anchor per entry. Nothing on docs.thefork.io carries a
+  changelog, release-notes or "what's new" surface, so a partner integrating against v1 has no dated
+  record of when the contract changed — which is the same gap the lifecycle artifact records on the
+  deprecation side.
+scheme:
+  versioning: whole-API integer version in the URI path (v1)
+  current_version: v1
+  dated_entries: false
+  breaking_change_flag: false
+entries:
+- title: March updates
+  date: null
+  highlights:
+  - guest welcome flow speed-ups during service
+- title: November updates
+  date: null
+  highlights:
+  - booking widget styling
+  - menu photography
+  - customer and loyalty tagging
+- title: Summer updates
+  date: null
+  highlights:
+  - booking widget enhancements
+- title: 2025 feature set
+  date: null
+  highlights:
+  - Lightspeed POS integration
+  - MyBeezBox gift voucher integration
+  - Google Reserve credit-card security
+  - special-request chat between diner and restaurant
+  - configurable notification types and channels
+  - centralised restaurant data dashboard
+  - mandatory custom reservation fields
+  - preset menu by dining area
+  - 15-month promotions data history
+  integration_related:
+  - Lightspeed POS integration
+  - MyBeezBox gift voucher integration
+  - Google Reserve credit-card security
+x-evidence:
+- url: https://www.theforkmanager.com/en/software-updates
+  status: 200
+- url: https://docs.thefork.io/sitemap.xml
+  status: 200
+  finding: 37 URLs, none of which is a changelog or release-notes page

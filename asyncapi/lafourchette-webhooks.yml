@@ -1,0 +1,106 @@
+generated: '2026-08-17'
+method: searched
+source: https://docs.thefork.io/B2B-API/event-webhook-flow
+spec_type: none
+asyncapi_published: false
+note: >-
+  TheFork runs two distinct push surfaces and publishes no AsyncAPI for either. The B2B webhook flow
+  pushes entity-change events to a partner CRM; the POS flow pushes an order-open call to the POS
+  vendor's own endpoint. Both are documented in prose with real JSON examples, captured verbatim
+  below. Registration is manual on both: there is no subscription API, no event-type filter, no
+  signature header and no published retry/backoff schedule — the partner emails TheFork a URL with a
+  token embedded in the query string, and that token IS the authentication for B2B events.
+surfaces:
+- name: B2B entity events
+  api: TheFork B2B API
+  direction: thefork -> partner
+  docs: https://docs.thefork.io/B2B-API/event-webhook-flow
+  transport: HTTPS POST
+  registration: manual — partner supplies an endpoint URL with a self-generated token in the query string to TheFork
+  authentication: shared secret carried as a query-string token on the partner's own URL
+  signature: none published
+  payload_shape: '{ entityType, eventType, uuid, groupUuid, restaurantUuid?, reservationUuid? }'
+  ack_contract: >-
+    Respond HTTP 200 with {"data":{}} within a few seconds; TheFork retries automatically on timeout.
+    Process asynchronously after acknowledging.
+  delivery_semantics: at-least-once (automatic retry on timeout; no published retry schedule or max attempts)
+  pattern: >-
+    Thin events. The payload carries only the entity UUID and the event type — the partner must call
+    the matching B2B GET operation to fetch the changed record.
+  events:
+  - entity: customer
+    event_type: customerCreated
+    fields: [entityType, eventType, uuid, groupUuid]
+    follow_up_operation: getV1CustomersId
+  - entity: customer
+    event_type: customerUpdated
+    fields: [entityType, eventType, uuid, groupUuid]
+    follow_up_operation: getV1CustomersId
+  - entity: reservation
+    event_type: reservationCreated
+    fields: [entityType, eventType, uuid, groupUuid, restaurantUuid]
+    follow_up_operation: getV1ReservationsId
+  - entity: reservation
+    event_type: reservationUpdated
+    fields: [entityType, eventType, uuid, groupUuid, restaurantUuid]
+    follow_up_operation: getV1ReservationsId
+  - entity: review
+    event_type: reviewRatingCreated
+    description: a new rating is submitted, with or without a pending comment
+    fields: [entityType, eventType, uuid, groupUuid, restaurantUuid, reservationUuid]
+    follow_up_operation: getV1ReviewsId
+  - entity: review
+    event_type: reviewCommentPublished
+    description: a guest comment is officially published
+    fields: [entityType, eventType, uuid, groupUuid, restaurantUuid, reservationUuid]
+    follow_up_operation: getV1ReviewsId
+  - entity: review
+    event_type: reviewCommentUnpublished
+    description: a published comment goes to moderation or is unpublished
+    fields: [entityType, eventType, uuid, groupUuid, restaurantUuid, reservationUuid]
+    follow_up_operation: getV1ReviewsId
+  - entity: review
+    event_type: reviewValidityChanged
+    description: rare; typically a GDPR data-deletion request
+    fields: [entityType, eventType, uuid, groupUuid, restaurantUuid, reservationUuid]
+    follow_up_operation: getV1ReviewsId
+  example: |
+    {
+      "entityType": "reservation",
+      "eventType": "reservationCreated",
+      "uuid": "a288660b-94e9-4702-936f-9c7caec0cdd4",
+      "groupUuid": "c1fa3225-690d-4b86-b255-042b3c218b68",
+      "restaurantUuid": "565426e9-a7d9-4123-8d9b-94275483fcf9"
+    }
+- name: POS order-open callback
+  api: TheFork POS API v1
+  direction: thefork -> POS vendor
+  docs: https://docs.thefork.io/POS-API/Flow/create-order
+  transport: HTTPS POST to the receiptOpeningUrl registered via postV1Create
+  registration: field receiptOpeningUrl on the POST /v1/create request body
+  authentication: 'Authorization: Bearer <oauthClientSecret> (secret the POS vendor generates and registers)'
+  routing_header: 'CustomerId: TheFork restaurant UUID'
+  trigger: a diner is marked ARRIVED or SEATED in TheFork Manager
+  payload_shape: a single order object, or an array of order objects
+  pattern: >-
+    Fat events. Unlike the B2B flow, the POS callback carries the whole order — customer profile with
+    allergies, dietary restrictions and seating preferences, meal date and start time, party size,
+    reservation status, meal status, offer/preset-menu detail, loyalty amount and prepayment.
+  reply_operation: putV1OrdersOrderuuid (POS closes the order back to TheFork with lines, currency and total)
+  enums:
+    reservationStatus: [RECORDED, CONFIRMED, CANCELED, NO_SHOW, REQUESTED, REFUSED, REJECTED]
+    mealStatus: [CONFIRMED, ARRIVED, SEATED, PARTIALLY_ARRIVED, BILL, LEFT]
+  deprecated_fields: [customerName, customerUuid, offerName, updatedAt]
+gaps:
+  asyncapi_document: not published
+  event_catalog_page: not published (events documented inline on one page)
+  signature_verification: none
+  replay_or_backfill: none
+  subscription_api: none
+x-evidence:
+- url: https://docs.thefork.io/B2B-API/event-webhook-flow
+  status: 200
+- url: https://docs.thefork.io/POS-API/Flow/create-order
+  status: 200
+- url: https://docs.thefork.io/POS-API/Flow/close-order
+  status: 200

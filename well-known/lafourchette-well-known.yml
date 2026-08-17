@@ -1,0 +1,96 @@
+generated: '2026-08-17'
+method: searched
+source: live probes of every LaFourchette / TheFork host named in apis.yml and in the OpenAPI servers[]
+note: >-
+  One real hit. The Auth0 tenant behind TheFork's B2B API is served on TheFork's own domain
+  (auth.thefork.io) and answers OIDC discovery anonymously at both /.well-known/openid-configuration
+  and /.well-known/oauth-authorization-server, which is what the B2B docs point at for the
+  client-credentials token exchange. Everything else 404s or is refused. docs.thefork.io is a static
+  S3/CloudFront origin that answers 403 (AccessDenied XML) for any missing key rather than 404 —
+  recorded here as the status actually observed, not translated. www.thefork.com sits behind DataDome
+  and answers 403 on the site root, but returns a genuine origin 404 for /.well-known/* paths, so the
+  absence there is real and not a bot wall. api.thefork.io is an authenticated gateway that answers
+  403 to every anonymous path.
+hosts:
+- host: https://auth.thefork.io
+  documents:
+  - path: /.well-known/openid-configuration
+    status: 200
+    file: lafourchette-openid-configuration.json
+    content_type: application/json
+  - path: /.well-known/oauth-authorization-server
+    status: 200
+    note: byte-identical to the openid-configuration document; not stored twice
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+- host: https://api.thefork.io
+  note: authenticated API gateway; every anonymous request returns 403 {"message":"Forbidden"}
+  documents:
+  - path: /.well-known/security.txt
+    status: 403
+  - path: /.well-known/openid-configuration
+    status: 403
+  - path: /.well-known/oauth-authorization-server
+    status: 403
+  - path: /.well-known/api-catalog
+    status: 403
+  - path: /.well-known/ai-plugin.json
+    status: 403
+  - path: /.well-known/agent-card.json
+    status: 403
+  - path: /.well-known/agent.json
+    status: 403
+- host: https://docs.thefork.io
+  note: static origin answers 403 AccessDenied for any missing key
+  documents:
+  - path: /.well-known/security.txt
+    status: 403
+  - path: /.well-known/api-catalog
+    status: 403
+  - path: /.well-known/ai-plugin.json
+    status: 403
+  - path: /.well-known/agent-card.json
+    status: 403
+  - path: /.well-known/agent.json
+    status: 403
+  - path: /llms.txt
+    status: 403
+- host: https://www.thefork.com
+  note: site root is 403 behind DataDome; /.well-known/* returns a genuine origin 404
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/api-catalog
+    status: 404
+  - path: /.well-known/ai-plugin.json
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /.well-known/agent.json
+    status: 404
+  - path: /llms.txt
+    status: 404
+- host: https://www.theforkmanager.com
+  documents:
+  - path: /.well-known/security.txt
+    status: 404
+  - path: /.well-known/agent-card.json
+    status: 404
+  - path: /llms.txt
+    status: 404
+summary:
+  hits: 2
+  security_txt: false
+  openid_configuration: true
+  oauth_authorization_server: true
+  api_catalog: false
+  ai_plugin: false
+  agent_card: false

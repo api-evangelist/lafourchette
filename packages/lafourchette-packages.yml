@@ -1,0 +1,144 @@
+generated: '2026-08-17'
+method: searched
+source: registry searches across npm, PyPI, Packagist, RubyGems, crates.io, NuGet, Maven Central and pkg.go.dev
+sdk_count: 0
+official_api_clients: 0
+note: >-
+  TheFork ships NO client library for either of its APIs, in any language. The docs teach the API in
+  raw curl only and never mention an SDK. What does exist under the lafourchette vendor namespace on
+  Packagist is a set of first-party Symfony bundles the company open-sourced between 2012 and 2017 —
+  internal platform plumbing (impersonation, localization, PagerDuty, breadcrumbs, an Adobe Campaign
+  client, a Talend client), none of which wraps TheFork's own API. They are listed because they are
+  genuinely first-party and they date the company's open-source posture, but they must not be read as
+  SDK coverage: no `SDKs` pointer is wired in apis.yml, because none of these packages helps anyone
+  call api.thefork.io. Every one of them is dormant — the newest release is 2017-04-28, nine years
+  before this pass, and one is flagged abandoned on Packagist.
+packages:
+- language: php
+  registry: packagist
+  name: lafourchette/switch-user-stateless-bundle
+  url: https://packagist.org/packages/lafourchette/switch-user-stateless-bundle
+  repository: https://github.com/lafourchette/SwitchUserStatelessBundle
+  install: composer require lafourchette/switch-user-stateless-bundle
+  official: true
+  api_client: false
+  version: v0.1.0
+  published: '2016-06-22'
+  downloads_total: 96218
+  description: Symfony bundle for stateless user impersonation on an API
+- language: php
+  registry: packagist
+  name: lafourchette/l10n-bundle
+  url: https://packagist.org/packages/lafourchette/l10n-bundle
+  repository: https://github.com/lafourchette/L10nBundle
+  install: composer require lafourchette/l10n-bundle
+  official: true
+  api_client: false
+  version: v1.7.1
+  published: '2017-04-28'
+  downloads_total: 74368
+  description: Symfony localization management bundle
+- language: php
+  registry: packagist
+  name: lafourchette/pager-duty-bundle
+  url: https://packagist.org/packages/lafourchette/pager-duty-bundle
+  repository: https://github.com/lafourchette/PagerDutyBundle
+  install: composer require lafourchette/pager-duty-bundle
+  official: true
+  api_client: false
+  version: v0.1.2
+  published: '2015-04-23'
+  downloads_total: 23808
+  description: Trigger PagerDuty events from a Symfony application
+- language: php
+  registry: packagist
+  name: lafourchette/breadcrumbs-bundle
+  url: https://packagist.org/packages/lafourchette/breadcrumbs-bundle
+  repository: https://github.com/lafourchette/LaFourchetteBreadcrumbsBundle
+  install: composer require lafourchette/breadcrumbs-bundle
+  official: true
+  api_client: false
+  version: v1.0.0
+  published: '2012-08-03'
+  downloads_total: 18124
+  description: Simple Symfony breadcrumbs bundle
+- language: php
+  registry: packagist
+  name: lafourchette/adobe-campaign-client-bundle
+  url: https://packagist.org/packages/lafourchette/adobe-campaign-client-bundle
+  repository: https://github.com/lafourchette/AdobeCampaignClientBundle
+  install: composer require lafourchette/adobe-campaign-client-bundle
+  official: true
+  api_client: false
+  version: v1.1.0
+  published: '2015-11-09'
+  downloads_total: 16079
+  description: Client for the Adobe Campaign API (third-party API, not TheFork's)
+- language: php
+  registry: packagist
+  name: lafourchette/talend-php-sdk
+  url: https://packagist.org/packages/lafourchette/talend-php-sdk
+  repository: https://github.com/lafourchette/talend-php-sdk
+  install: composer require lafourchette/talend-php-sdk
+  official: true
+  api_client: false
+  version: v1.1.1
+  published: '2015-09-22'
+  downloads_total: 218
+  description: Client for the Talend administrator server API (third-party API, not TheFork's)
+- language: php
+  registry: packagist
+  name: lafourchette/talend-client-bundle
+  url: https://packagist.org/packages/lafourchette/talend-client-bundle
+  repository: https://github.com/lafourchette/TalendClientBundle
+  install: composer require lafourchette/talend-client-bundle
+  official: true
+  api_client: false
+  version: v1.1.0
+  published: '2014-11-28'
+  downloads_total: 137
+  description: Symfony wrapper around the Talend client
+- language: php
+  registry: packagist
+  name: lafourchette/lock
+  url: https://packagist.org/packages/lafourchette/lock
+  repository: https://github.com/lafourchette/lock
+  official: true
+  api_client: false
+  version: null
+  published: null
+  abandoned: true
+  downloads_total: 57
+  description: Locking helper; flagged abandoned on Packagist, no tagged release
+third_party:
+- language: javascript
+  registry: npm
+  name: '@gruposk/n8n-nodes-thefork'
+  url: https://www.npmjs.com/package/@gruposk/n8n-nodes-thefork
+  official: false
+  api_client: true
+  version: 1.2.4
+  published: '2025-12-01'
+  description: >-
+    Community n8n node for TheFork B2B API. Not published by TheFork; listed so the ecosystem gap is
+    visible — the only maintained client for this API is a third party's workflow node.
+registries_probed:
+- registry: npm
+  query: thefork, lafourchette, scope @thefork, scope @lafourchette
+  finding: only placeholder "dummy" packages under @thefork and @lafourchette (v1.0.0, 2021-03-10) and one third-party n8n node
+- registry: pypi
+  query: thefork, lafourchette, thefork-api
+  finding: 404
+- registry: packagist
+  query: lafourchette, thefork
+  finding: 8 first-party Symfony bundles under the lafourchette vendor; nothing that calls TheFork's API
+- registry: rubygems
+  finding: none
+- registry: crates.io
+  finding: none
+- registry: nuget
+  finding: none
+- registry: maven central
+  finding: none
+- registry: pkg.go.dev
+  finding: none
