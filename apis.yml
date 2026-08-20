@@ -21,6 +21,19 @@ modified: '2026-08-17'
 tags:
 - Company
 - Consumer
+- Restaurant
+- Reservations
+- Booking
+- Hospitality
+- Point-of-Sale
+- Reviews
+- Marketplace
+- Travel and Dining
+- Webhook
+- France
+tags_raw:
+- Company
+- Consumer
 - Restaurants
 - Reservations
 - Booking
@@ -42,6 +55,13 @@ apis:
   humanURL: https://docs.thefork.io/B2B-API/introduction
   baseURL: https://api.thefork.io/manager
   tags:
+  - Reservations
+  - Customers
+  - Reviews
+  - booking-funnel
+  - Availability
+  - CRM
+  tags_raw:
   - reservations
   - customers
   - reviews
@@ -70,6 +90,11 @@ apis:
   humanURL: https://docs.thefork.io/POS-API/introduction
   baseURL: https://api.thefork.io/pos
   tags:
+  - Point-of-Sale
+  - Order
+  - Billing
+  - Reservations
+  tags_raw:
   - point-of-sale
   - orders
   - billing
