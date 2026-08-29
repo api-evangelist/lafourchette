@@ -11,6 +11,18 @@ description: 'LA FOURCHETTE SAS, trading as TheFork, is the European restaurant-
   and push closed-bill data back onto a reservation. A push webhook flow delivers customer, reservation
   and review events to partner endpoints. Credentials are issued by the integrations team; the B2B API
   uses an Auth0 client-credentials access token and the POS API an X-Api-Key header.'
+deliveryModel:
+  model: saas
+  open_source: false
+  commercial: true
+  callable_host: true
+  label: Hosted service · you call their endpoint
+  confidence: high
+  source:
+  - openapi
+  - pricing
+  generated: '2026-08-28'
+  method: derived
 image: https://docs.thefork.io/img/thefork_logo_2023_secondary.svg
 url: https://raw.githubusercontent.com/api-evangelist/lafourchette/refs/heads/main/apis.yml
 x-type: company
