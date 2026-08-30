@@ -2,38 +2,36 @@
 kin_checks:
   slug: lafourchette
   schema_version: 0.15.1
-  scored_at: '2026-08-27'
-  run_ts: 2026-08-27T140727
+  scored_at: '2026-08-28'
+  run_ts: 2026-08-28T221322
   note: Actionable checks only (missed + partial). earned/na are every other check
     in rubric/scoring-0.15.1.yml; counts below let you verify that.
   counts:
     total: 130
-    earned: 37
+    earned: 38
     partial: 25
-    missed: 44
+    missed: 43
     na: 24
   checks:
-  - id: multiple_apis
-    status: missed
   - id: llms_txt_published
     status: missed
   - id: apis_json_self_hosted
     status: missed
   - id: openapi_3_2
     status: missed
-    detail: 0 of 2 openapi documents pass
+    detail: 0 of 5 openapi documents pass
   - id: openapi_3_1
     status: missed
-    detail: 0 of 2 openapi documents pass
+    detail: 0 of 5 openapi documents pass
   - id: operations_summary_coverage
     status: missed
-    detail: 0 of 2 openapi documents pass
+    detail: 0 of 5 openapi documents pass
   - id: components_reuse
     status: missed
-    detail: 0 of 2 openapi documents pass
+    detail: 0 of 5 openapi documents pass
   - id: webhooks_or_callbacks
     status: missed
-    detail: 0 of 2 openapi documents pass
+    detail: 0 of 5 openapi documents pass
   - id: json_schema_present
     status: missed
   - id: json_schema_per_resource
@@ -112,61 +110,61 @@ kin_checks:
   - id: openapi_3_0
     status: partial
     earned: 0.75
-    detail: 2 of 2 openapi documents pass
+    detail: 5 of 5 openapi documents pass
   - id: info_complete
     status: partial
     earned: 1.0
-    detail: 2 of 2 openapi documents pass
+    detail: 5 of 5 openapi documents pass
   - id: servers_defined
     status: partial
     earned: 0.75
-    detail: 2 of 2 openapi documents pass
+    detail: 5 of 5 openapi documents pass
   - id: servers_resolvable
     status: partial
     earned: 1.25
   - id: operations_description_coverage
     status: partial
     earned: 1.5
-    detail: 2 of 2 openapi documents pass
+    detail: 5 of 5 openapi documents pass
   - id: operations_tagged
     status: partial
     earned: 1.0
-    detail: 2 of 2 openapi documents pass
+    detail: 5 of 5 openapi documents pass
   - id: operations_operation_ids
     status: partial
     earned: 1.0
-    detail: 2 of 2 openapi documents pass
+    detail: 5 of 5 openapi documents pass
   - id: response_coverage
     status: partial
     earned: 1.25
-    detail: 2 of 2 openapi documents pass
+    detail: 5 of 5 openapi documents pass
   - id: error_responses_documented
     status: partial
-    earned: 0.5
-    detail: 1 of 2 openapi documents pass
+    earned: 0.8
+    detail: 4 of 5 openapi documents pass
   - id: examples_present
     status: partial
-    earned: 0.5
+    earned: 0.8
   - id: security_schemes_defined
     status: partial
-    earned: 0.5
-    detail: 1 of 2 openapi documents pass
+    earned: 0.2
+    detail: 1 of 5 openapi documents pass
   - id: security_applied
     status: partial
-    earned: 0.38
-    detail: 1 of 2 openapi documents pass
+    earned: 0.15
+    detail: 1 of 5 openapi documents pass
   - id: oauth_flows_current
     status: partial
     earned: 1.0
-    detail: 2 of 2 openapi documents pass
+    detail: 5 of 5 openapi documents pass
   - id: credentials_not_in_query
     status: partial
     earned: 0.75
-    detail: 2 of 2 openapi documents pass
+    detail: 5 of 5 openapi documents pass
   - id: oauth_scopes_enumerated
     status: partial
     earned: 1.0
-    detail: 2 of 2 openapi documents pass
+    detail: 5 of 5 openapi documents pass
   - id: conformance_declared
     status: partial
     earned: 1.5
