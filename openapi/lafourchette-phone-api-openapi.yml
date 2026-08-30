@@ -1,0 +1,348 @@
+openapi: 3.2.0
+info:
+  title: TheFork B2B Phone API
+  version: 1.0.0
+  description: TheFork (LA FOURCHETTE SAS) B2B / Partners API for TheFork Manager (TFM). Lets restaurant groups, CRM platforms and third-party partners read customers, reservations and reviews, drive the booking funnel (availabilities, offers, party sizes, timeslots, create/update/cancel reservations), reply to reviews, and run call-centre caller recognition. Access is granted by TheFork; authentication is an Auth0 client-credentials access token presented as a bearer token (audience https://api.thefork.io).
+  contact:
+    name: TheFork integrations team
+    email: integrations@thefork.com
+    url: https://docs.thefork.io/
+  termsOfService: https://docs.thefork.io/pdf/LaFourchette-Partners-API-Licence-2.pdf
+  x-provenance: Reconstructed by API Evangelist from the OpenAPI operation objects TheFork itself publishes in the compiled assets of its Docusaurus developer portal (docs.thefork.io, docusaurus-plugin-openapi-docs). TheFork does not serve a single downloadable OpenAPI document at any probed URL; every path, operationId, parameter, request body, response and schema below is verbatim provider content decoded from those published page bundles. Nothing here was authored by API Evangelist.
+  x-source-title: B2B-API specifications
+servers:
+- url: https://api.thefork.io/manager
+tags:
+- name: Phone
+paths:
+  /v1/callCenter/callRecognitions:
+    post:
+      operationId: postV1CallCenterCallRecognitions
+      tags:
+      - Phone
+      description: Create new phone call or mark an ongoing phone call as finished.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                callId:
+                  type: string
+                  format: uuid
+                  description: phone call Uuid
+                  example: c564869f-225a-4cb6-b124-2214a6216ec1
+                callCallerId:
+                  type: string
+                  description: Caller's phone number is provided in the local format - the client
+                  example: '0601020304'
+                callCallerIdValidPhone:
+                  type: boolean
+                  example: true
+                callPhoneNumber:
+                  type: string
+                  format: phone
+                  pattern: ^\+[1-9]\d{1,14}$
+                  description: phone number of the one calling - the client
+                  example: '+33601020304'
+                callCurrentStatus:
+                  type: string
+                  enum:
+                  - SONNERIE
+                  - DECROCHE
+                  - RACCROCHE
+                  - ABANDON
+                  - incoming
+                  - missed
+                  - answered
+                  - ended
+                callDateMillis:
+                  type: string
+                  example: '1686073178976'
+                theForkID:
+                  type: string
+                  format: uuid
+                  description: restaurant uuid corresponding to the toPhoneNumber
+                  example: c564869f-225a-4cb6-b124-2214a6216ec1
+                sendAllEvents:
+                  type: boolean
+                  example: false
+              required:
+              - callCallerId
+              - callCallerIdValidPhone
+              - callCurrentStatus
+              - callDateMillis
+              - theForkID
+              additionalProperties: false
+      responses:
+        '200':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: number
+                    example: 200
+        '401':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - ''
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Unauthorized
+                  statusCode:
+                    type: number
+                    enum:
+                    - 401
+                required:
+                - data
+                - error
+                - statusCode
+      x-source-page: https://docs.thefork.io/B2B-API/API specifications/post-v-1-call-center-call-recognitions-1b7
+      x-source-asset: https://docs.thefork.io/assets/js/7640361e.b6bc1108.js
+  /v1/integrationStatus:
+    patch:
+      operationId: patchV1IntegrationStatus
+      tags:
+      - Phone
+      description: Update integration status for a restaurant
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                restaurantUuid:
+                  type: string
+                  format: uuid
+                  description: Restaurant UUID
+                  example: cf5946cc-bde0-4cb1-bca5-7b59f66a5c94
+                status:
+                  type: string
+                  enum:
+                  - LeadReceived
+                  - DiscoveryOngoing
+                  - TypeformSent
+                  - FailedDiscovery
+                  - HardwareInTransit
+                  - FailedDelivery
+                  - HardwareToBeInstalled
+                  - FailedInstallation
+                  - InstallationCompleted
+                  description: integration status
+                  example: LeadReceived
+              required:
+              - restaurantUuid
+              - status
+              additionalProperties: false
+      responses:
+        '200':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  statusCode:
+                    type: number
+                required:
+                - statusCode
+                additionalProperties: false
+        '401':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - ''
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Unauthorized
+                  statusCode:
+                    type: number
+                    enum:
+                    - 401
+                required:
+                - data
+                - error
+                - statusCode
+      x-source-page: https://docs.thefork.io/B2B-API/API specifications/patch-v-1-integration-status-a97
+      x-source-asset: https://docs.thefork.io/assets/js/caabd68a.f984be41.js
+  /v1/restaurants/{id}/customers/phone/{phoneNumber}:
+    get:
+      operationId: getV1RestaurantsIdCustomersPhonePhoneNumber
+      tags:
+      - Phone
+      description: Get the customer details for a given customer phone number.
+      parameters:
+      - schema:
+          type: string
+          format: uuid
+          description: restaurant uuid that needs to be considered for filter
+          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        required: true
+        description: restaurant uuid that needs to be considered for filter
+        name: id
+        in: path
+      - schema:
+          type: string
+          format: phone
+          pattern: ^\+[1-9]\d{1,14}$
+          description: customer phone number that needs to be considered for filter
+          example: '+33612345678'
+        required: true
+        description: customer phone number that needs to be considered for filter
+        name: phoneNumber
+        in: path
+      responses:
+        '200':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  customerUuid:
+                    type:
+                    - string
+                    - 'null'
+                    format: uuid
+                    description: Customer UUID
+                    example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                  firstName:
+                    type:
+                    - string
+                    - 'null'
+                    example: Doe
+                  lastName:
+                    type:
+                    - string
+                    - 'null'
+                    example: John
+                  phone:
+                    type: string
+                    example: '+33612345678'
+                  email:
+                    type:
+                    - string
+                    - 'null'
+                    example: john@example.com
+                  nextReservationsList:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        reservationUuid:
+                          type: string
+                          format: uuid
+                          description: 'reservation uuid '
+                          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                        mealDate:
+                          type:
+                          - string
+                          - 'null'
+                          description: Reservation meal date
+                          example: '2022-01-03T18:10:17.269Z'
+                        status:
+                          type: string
+                          enum:
+                          - RECORDED
+                          - CANCELED
+                          - NO_SHOW
+                          - REQUESTED
+                          - REFUSED
+                          description: Reservation status
+                          example: RECORDED
+                      required:
+                      - reservationUuid
+                      - mealDate
+                      - status
+                      additionalProperties: false
+                required:
+                - customerUuid
+                - phone
+                - nextReservationsList
+                additionalProperties: false
+        '401':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - ''
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Unauthorized
+                  statusCode:
+                    type: number
+                    enum:
+                    - 401
+                required:
+                - data
+                - error
+                - statusCode
+        '404':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - PHONE_NUMBER_NOT_FOUND
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Not Found
+                  statusCode:
+                    type: number
+                    enum:
+                    - 404
+                required:
+                - data
+                - error
+                - statusCode
+      x-source-page: https://docs.thefork.io/B2B-API/API specifications/get-v-1-restaurants-id-customers-phone-phone-number-22f
+      x-source-asset: https://docs.thefork.io/assets/js/eadad500.93a4a9bd.js

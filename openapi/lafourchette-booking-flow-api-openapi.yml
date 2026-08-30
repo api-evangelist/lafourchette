@@ -1,0 +1,1509 @@
+openapi: 3.2.0
+info:
+  title: TheFork B2B Booking flow API
+  version: 1.0.0
+  description: TheFork (LA FOURCHETTE SAS) B2B / Partners API for TheFork Manager (TFM). Lets restaurant groups, CRM platforms and third-party partners read customers, reservations and reviews, drive the booking funnel (availabilities, offers, party sizes, timeslots, create/update/cancel reservations), reply to reviews, and run call-centre caller recognition. Access is granted by TheFork; authentication is an Auth0 client-credentials access token presented as a bearer token (audience https://api.thefork.io).
+  contact:
+    name: TheFork integrations team
+    email: integrations@thefork.com
+    url: https://docs.thefork.io/
+  termsOfService: https://docs.thefork.io/pdf/LaFourchette-Partners-API-Licence-2.pdf
+  x-provenance: Reconstructed by API Evangelist from the OpenAPI operation objects TheFork itself publishes in the compiled assets of its Docusaurus developer portal (docs.thefork.io, docusaurus-plugin-openapi-docs). TheFork does not serve a single downloadable OpenAPI document at any probed URL; every path, operationId, parameter, request body, response and schema below is verbatim provider content decoded from those published page bundles. Nothing here was authored by API Evangelist.
+  x-source-title: B2B-API specifications
+servers:
+- url: https://api.thefork.io/manager
+tags:
+- name: Booking flow
+paths:
+  /v1/reservations/{id}:
+    patch:
+      operationId: patchV1ReservationsId
+      tags:
+      - Booking flow
+      description: Update a reservation meal date and party size.
+      parameters:
+      - schema:
+          type: string
+          format: uuid
+          description: reservation uuid
+          example: cf5946cc-bde0-4cb1-bca5-7b59f66a5c94
+        required: true
+        description: reservation uuid
+        name: id
+        in: path
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mealDate:
+                  type:
+                  - string
+                  - 'null'
+                  description: Reservation meal date
+                  example: '2022-01-03T18:10:17.269Z'
+                partySize:
+                  type: integer
+                  description: Number of person attending to the reservation
+                  example: 2
+                  exclusiveMinimum: 0
+              required:
+              - mealDate
+              - partySize
+              additionalProperties: false
+      responses:
+        '200':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reservationUuid:
+                    type: string
+                    format: uuid
+                    description: 'reservation uuid '
+                    example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                  restaurantUuid:
+                    type: string
+                    format: uuid
+                    description: 'restaurant uuid '
+                    example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                  mealDate:
+                    type:
+                    - string
+                    - 'null'
+                    description: Reservation meal date
+                    example: '2022-01-03T18:10:17.269Z'
+                  mealStatus:
+                    type:
+                    - string
+                    - 'null'
+                    description: Represents steps for the meal while diner is at the table. Meal statuses do not follow any specific flow.
+                    enum:
+                    - PARTIALLY_ARRIVED
+                    - ARRIVED
+                    - SEATED
+                    - BILL
+                    - LEFT
+                    example: ARRIVED
+                  partySize:
+                    type: integer
+                    description: Number of person attending to the reservation
+                    example: 2
+                    exclusiveMinimum: 0
+                  status:
+                    type: string
+                    enum:
+                    - RECORDED
+                    - CANCELED
+                    - NO_SHOW
+                    - REQUESTED
+                    - REFUSED
+                    description: "- Reservation status\n-\n- Main statuses\n  - \\- RECORDED: most frequent status, reservation is confirmed\n  - \\- CANCELED: reservation has been canceled\n  - \\- NO_SHOW: reservation has been flagged as no-show\n-\n- Secondary statuses\n  - \\- REQUESTED: Reservation is waiting for a an action from the restaurant (on request booking or Waitlist) - not confirmed yet\n  - \\- REFUSED: final state if a requested reservation has been declined by the restaurant"
+                    example: RECORDED
+                  offerUuid:
+                    type:
+                    - string
+                    - 'null'
+                    format: uuid
+                    example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                  customerNote:
+                    type:
+                    - string
+                    - 'null'
+                    maxLength: 1000
+                    description: Special request field that the diner can enter while making the reservation
+                    example: note by the customer
+                  restaurantNote:
+                    type:
+                    - string
+                    - 'null'
+                    maxLength: 3000
+                    description: Internal notes for the restaurant staff
+                    example: note by the restaurant
+                  customer:
+                    type:
+                    - object
+                    - 'null'
+                    properties:
+                      customerUuid:
+                        type: string
+                        format: uuid
+                        description: Customer UUID
+                        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                      email:
+                        type:
+                        - string
+                        - 'null'
+                        example: john@example.com
+                      firstName:
+                        type:
+                        - string
+                        - 'null'
+                        example: Doe
+                      lastName:
+                        type:
+                        - string
+                        - 'null'
+                        example: John
+                      phone:
+                        type:
+                        - string
+                        - 'null'
+                        example: '+33612345678'
+                      locale:
+                        type:
+                        - string
+                        - 'null'
+                        pattern: ^([a-z]{2,3})(?:_([A-Z]{2}))?$
+                        example: fr_FR
+                      civility:
+                        type:
+                        - string
+                        - 'null'
+                        example: mr
+                      optins:
+                        type: object
+                        properties:
+                          restaurantNewsletter:
+                            type: boolean
+                            default: false
+                            description: Optin the diner to the restaurant newsletter, when false is provided it will not unsubscribe the diner
+                            example: true
+                        default:
+                          restaurantNewsletter: false
+                        additionalProperties: false
+                    required:
+                    - customerUuid
+                    - email
+                    - firstName
+                    - lastName
+                    - phone
+                    - locale
+                    - civility
+                    additionalProperties: false
+                required:
+                - reservationUuid
+                - restaurantUuid
+                - mealDate
+                - partySize
+                - status
+                - customer
+                additionalProperties: false
+        '401':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - ''
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Unauthorized
+                  statusCode:
+                    type: number
+                    enum:
+                    - 401
+                required:
+                - data
+                - error
+                - statusCode
+        '404':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - RESERVATION_NOT_FOUND
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Not Found
+                  statusCode:
+                    type: number
+                    enum:
+                    - 404
+                required:
+                - data
+                - error
+                - statusCode
+        '409':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - DOUBLE_BOOKING
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Conflict
+                  statusCode:
+                    type: number
+                    enum:
+                    - 409
+                required:
+                - data
+                - error
+                - statusCode
+      x-source-page: https://docs.thefork.io/B2B-API/API specifications/patch-v-1-reservations-id-e25
+      x-source-asset: https://docs.thefork.io/assets/js/a8fbf7bc.68c6887c.js
+  /v1/reservations/{id}/cancel:
+    patch:
+      operationId: patchV1ReservationsIdCancel
+      tags:
+      - Booking flow
+      description: Cancel a reservation.
+      parameters:
+      - schema:
+          type: string
+          format: uuid
+          description: 'reservation uuid '
+          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        required: true
+        description: 'reservation uuid '
+        name: id
+        in: path
+      responses:
+        '200':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reservationUuid:
+                    type: string
+                    format: uuid
+                    description: 'reservation uuid '
+                    example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                  restaurantUuid:
+                    type: string
+                    format: uuid
+                    description: 'restaurant uuid '
+                    example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                  mealDate:
+                    type:
+                    - string
+                    - 'null'
+                    description: Reservation meal date
+                    example: '2022-01-03T18:10:17.269Z'
+                  partySize:
+                    type: integer
+                    description: Number of person attending to the reservation
+                    example: 2
+                    exclusiveMinimum: 1
+                  status:
+                    type: string
+                    enum:
+                    - RECORDED
+                    - CANCELED
+                    - NO_SHOW
+                    - REQUESTED
+                    - REFUSED
+                    description: Reservation status
+                    example: RECORDED
+                  offerUuid:
+                    type:
+                    - string
+                    - 'null'
+                    format: uuid
+                    example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                  customerNote:
+                    type:
+                    - string
+                    - 'null'
+                    description: Special request field that the diner can enter text in while making the reservation
+                    example: note by the customer
+                  customerUuid:
+                    type:
+                    - string
+                    - 'null'
+                    format: uuid
+                    description: customer uuid
+                    example: 3fa85f64-5717-4562-b3fc-2c963f66afb3
+                required:
+                - reservationUuid
+                - restaurantUuid
+                - mealDate
+                - partySize
+                - status
+                additionalProperties: false
+        '400':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - CANCELLATION_ERROR
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Bad Request
+                  statusCode:
+                    type: number
+                    enum:
+                    - 400
+                required:
+                - data
+                - error
+                - statusCode
+        '401':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - ''
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Unauthorized
+                  statusCode:
+                    type: number
+                    enum:
+                    - 401
+                required:
+                - data
+                - error
+                - statusCode
+        '404':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - RESERVATION_NOT_FOUND
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Not Found
+                  statusCode:
+                    type: number
+                    enum:
+                    - 404
+                required:
+                - data
+                - error
+                - statusCode
+        '409':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - DOUBLE_CANCELLATION
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Conflict
+                  statusCode:
+                    type: number
+                    enum:
+                    - 409
+                required:
+                - data
+                - error
+                - statusCode
+      x-source-page: https://docs.thefork.io/B2B-API/API specifications/patch-v-1-reservations-id-cancel-788
+      x-source-asset: https://docs.thefork.io/assets/js/9a309802.82545e3e.js
+  /v1/restaurants/{id}/availabilities:
+    get:
+      operationId: getV1RestaurantsIdAvailabilities
+      tags:
+      - Booking flow
+      description: Get list of availabilities for a given restaurant and date range.
+      parameters:
+      - schema:
+          type: string
+          format: uuid
+          description: restaurant uuid that needs to be considered for filter
+          example: c564869f-225a-4cb6-b124-2214a6216ec1
+        required: true
+        description: restaurant uuid that needs to be considered for filter
+        name: id
+        in: path
+      - schema:
+          type: string
+          format: date
+          description: start date that needs to be considered for filter
+          example: '2022-01-01'
+        required: true
+        description: start date that needs to be considered for filter
+        name: startDate
+        in: query
+      - schema:
+          type: string
+          format: uuid
+          description: offer uuid that may be considered for filter
+          example: a114c986-9d5b-4c34-a86b-427137dae3d4
+        required: false
+        description: offer uuid that may be considered for filter
+        name: offerUuid
+        in: query
+      - schema:
+          type: string
+          format: date
+          description: end date that needs to be considered for filter
+          example: '2022-09-02'
+        required: true
+        description: end date that needs to be considered for filter
+        name: endDate
+        in: query
+      - schema:
+          type: number
+          description: party size that may be considered for filter
+          example: 2
+          exclusiveMinimum: 0
+        required: false
+        description: party size that may be considered for filter
+        name: partySize
+        in: query
+      responses:
+        '200':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    date:
+                      type: string
+                      description: availalable date
+                      example: '2022-01-01'
+                    offerList:
+                      type:
+                      - array
+                      - 'null'
+                      items:
+                        type: string
+                        format: uuid
+                        example: a114c986-9d5b-4c34-a86b-427137dae3d4
+                      description: list of offer uuid
+                    hasNormalStock:
+                      type: boolean
+                      description: Has availability for reservation without offer
+                      example: true
+                  required:
+                  - date
+                  - hasNormalStock
+                  additionalProperties: false
+        '401':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - ''
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Unauthorized
+                  statusCode:
+                    type: number
+                    enum:
+                    - 401
+                required:
+                - data
+                - error
+                - statusCode
+        '409':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - DOUBLE_BOOKING
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Conflict
+                  statusCode:
+                    type: number
+                    enum:
+                    - 409
+                required:
+                - data
+                - error
+                - statusCode
+      x-source-page: https://docs.thefork.io/B2B-API/API specifications/get-v-1-restaurants-id-availabilities-d7b
+      x-source-asset: https://docs.thefork.io/assets/js/fac63e84.55151770.js
+  /v1/restaurants/{id}/availabilities/override:
+    put:
+      operationId: putV1RestaurantsIdAvailabilitiesOverride
+      tags:
+      - Booking flow
+      description: Override online availability for a given restaurant, date, and time range.
+      parameters:
+      - schema:
+          type: string
+          format: uuid
+          description: Restaurant UUID
+          example: c564869f-225a-4cb6-b124-2214a6216ec1
+        required: true
+        description: Restaurant UUID
+        name: id
+        in: path
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                date:
+                  type: string
+                  format: date
+                  description: Date to override availability for (YYYY-MM-DD)
+                  example: '2026-06-01'
+                startTime:
+                  type: string
+                  description: First timeslot start to close/open (HH:mm, inclusive)
+                  example: '19:00'
+                endTime:
+                  type: string
+                  description: Last timeslot start to close/open (HH:mm, inclusive). If omitted, applies only to startTime. The affected interval is [startTime, endTime + slot spacing), so the slot starting at endTime is included.
+                  example: '21:30'
+                isOpen:
+                  type: boolean
+                  default: false
+                  description: true = open, false = close
+                  example: false
+              required:
+              - date
+              - startTime
+              additionalProperties: false
+      responses:
+        '200':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  restaurantUuid:
+                    type: string
+                    format: uuid
+                    example: c564869f-225a-4cb6-b124-2214a6216ec1
+                  date:
+                    type: string
+                    format: date
+                    example: '2026-06-01'
+                  startTime:
+                    type: string
+                    example: '19:00'
+                  endTime:
+                    type: string
+                    example: '21:30'
+                  isOpen:
+                    type: boolean
+                    example: false
+                required:
+                - restaurantUuid
+                - date
+                - startTime
+                - endTime
+                - isOpen
+                additionalProperties: false
+        '401':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - ''
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Unauthorized
+                  statusCode:
+                    type: number
+                    enum:
+                    - 401
+                required:
+                - data
+                - error
+                - statusCode
+        '404':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - RESTAURANT_NOT_FOUND
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Not Found
+                  statusCode:
+                    type: number
+                    enum:
+                    - 404
+                required:
+                - data
+                - error
+                - statusCode
+      x-source-page: https://docs.thefork.io/B2B-API/API specifications/put-v-1-restaurants-id-availabilities-override-909
+      x-source-asset: https://docs.thefork.io/assets/js/0f07e7f9.6f0485d0.js
+  /v1/restaurants/{id}/offers:
+    get:
+      operationId: getV1RestaurantsIdOffers
+      tags:
+      - Booking flow
+      description: Get list of offers for a given restaurant id.
+      parameters:
+      - schema:
+          type: string
+          format: uuid
+          description: restaurant uuid that needs to be considered for filter
+          example: c564869f-225a-4cb6-b124-2214a6216ec1
+        required: true
+        description: restaurant uuid that needs to be considered for filter
+        name: id
+        in: path
+      - schema:
+          type: string
+          pattern: ^([a-z]{2,3})(?:_([A-Z]{2}))?$
+          example: fr_FR
+        required: true
+        name: locale
+        in: query
+      responses:
+        '200':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    uuid:
+                      type: string
+                      format: uuid
+                      description: Offer UUID
+                      example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                    name:
+                      type:
+                      - string
+                      - 'null'
+                      description: Name offer
+                      example: Offer name
+                    description:
+                      type:
+                      - string
+                      - 'null'
+                      description: Description offer
+                      example: Offer description
+                    price:
+                      type:
+                      - number
+                      - 'null'
+                      description: Price offer
+                      example: 10
+                  required:
+                  - uuid
+                  additionalProperties: false
+        '401':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - ''
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Unauthorized
+                  statusCode:
+                    type: number
+                    enum:
+                    - 401
+                required:
+                - data
+                - error
+                - statusCode
+        '404':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - RESTAURANT_NOT_FOUND
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Not Found
+                  statusCode:
+                    type: number
+                    enum:
+                    - 404
+                required:
+                - data
+                - error
+                - statusCode
+      x-source-page: https://docs.thefork.io/B2B-API/API specifications/get-v-1-restaurants-id-offers-c32
+      x-source-asset: https://docs.thefork.io/assets/js/1e10e7d1.8c45c0f2.js
+  /v1/restaurants/{id}/partySizes:
+    get:
+      operationId: getV1RestaurantsIdPartySizes
+      tags:
+      - Booking flow
+      description: Get list of party sizes for which there is availability on a given restaurant and date range.
+      parameters:
+      - schema:
+          type: string
+          format: uuid
+          description: restaurant uuid that needs to be considered for filter
+          example: c564869f-225a-4cb6-b124-2214a6216ec1
+        required: true
+        description: restaurant uuid that needs to be considered for filter
+        name: id
+        in: path
+      - schema:
+          type: string
+          format: date
+          description: start date that needs to be considered for filter
+          example: '2022-01-01'
+        required: true
+        description: start date that needs to be considered for filter
+        name: startDate
+        in: query
+      - schema:
+          type: string
+          format: date
+          description: end date that needs to be considered for filter
+          example: '2022-09-02'
+        required: true
+        description: end date that needs to be considered for filter
+        name: endDate
+        in: query
+      - schema:
+          type: string
+          format: uuid
+          description: offer uuid that may be considered for filter
+          example: a114c986-9d5b-4c34-a86b-427137dae3d4
+        required: false
+        description: offer uuid that may be considered for filter
+        name: offerUuid
+        in: query
+      responses:
+        '200':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: number
+                example:
+                - 1
+                - 2
+                - 3
+                - 9
+                - 10
+        '401':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - ''
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Unauthorized
+                  statusCode:
+                    type: number
+                    enum:
+                    - 401
+                required:
+                - data
+                - error
+                - statusCode
+        '404':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - RESTAURANT_NOT_FOUND
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Not Found
+                  statusCode:
+                    type: number
+                    enum:
+                    - 404
+                required:
+                - data
+                - error
+                - statusCode
+      x-source-page: https://docs.thefork.io/B2B-API/API specifications/get-v-1-restaurants-id-party-sizes-7aa
+      x-source-asset: https://docs.thefork.io/assets/js/40f638ec.662078db.js
+  /v1/restaurants/{id}/reservations:
+    post:
+      operationId: postV1RestaurantsIdReservations
+      tags:
+      - Booking flow
+      description: Create a reservation for a given restaurant, with all details (meal date, party size and customer data).
+      parameters:
+      - schema:
+          type: string
+          format: uuid
+          description: restaurant uuid that needs to be considered for filter
+          example: c564869f-225a-4cb6-b124-2214a6216ec1
+        required: true
+        description: restaurant uuid that needs to be considered for filter
+        name: id
+        in: path
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                mealDate:
+                  type: string
+                  description: Reservation meal date
+                  example: '2022-01-03T18:10:17.269Z'
+                partySize:
+                  type: integer
+                  description: Number of person attending to the reservation
+                  example: 2
+                  exclusiveMinimum: 0
+                offerUuid:
+                  type: string
+                  format: uuid
+                  example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                customerNote:
+                  type:
+                  - string
+                  - 'null'
+                  maxLength: 1000
+                  description: Special request field that the diner can enter text in while making the reservation
+                  example: note by the customer
+                restaurantNote:
+                  type:
+                  - string
+                  - 'null'
+                  maxLength: 1000
+                  description: Internal notes for the restaurant staff
+                  example: note by the restaurant
+                customer:
+                  type: object
+                  properties:
+                    email:
+                      type: string
+                      format: email
+                      example: john@example.com
+                    firstName:
+                      type: string
+                      example: Doe
+                    lastName:
+                      type: string
+                      example: John
+                    phone:
+                      type: string
+                      format: phone
+                      pattern: ^\+[1-9]\d{1,14}$
+                      example: '+33612345678'
+                    locale:
+                      type: string
+                      pattern: ^([a-z]{2,3})(?:_([A-Z]{2}))?$
+                      example: fr_FR
+                    civility:
+                      type: string
+                      enum:
+                      - mr
+                      - mrs
+                      - ms
+                      - mr_and_mrs
+                      - mx
+                      - doctor
+                      - professor
+                      - counsel
+                      - ambassador
+                      - madam_ambassador
+                      - president
+                      - madam_president
+                      - magister
+                      - chef
+                      - lord
+                      - prince
+                      - princess
+                      - count
+                      - countess
+                      - duke
+                      - duchess
+                      - sir
+                      - lady
+                      - highness
+                      - baron
+                      - baroness
+                      - company
+                      example: mr
+                    optins:
+                      type: object
+                      properties:
+                        restaurantNewsletter:
+                          type: boolean
+                          default: false
+                          description: Optin the diner to the restaurant newsletter, when false is provided it will not unsubscribe the diner
+                          example: true
+                      default:
+                        restaurantNewsletter: false
+                      additionalProperties: false
+                  required:
+                  - email
+                  - firstName
+                  - lastName
+                  - locale
+                  - civility
+                  additionalProperties: false
+              required:
+              - mealDate
+              - partySize
+              - customer
+              additionalProperties: false
+      responses:
+        '200':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reservationUuid:
+                    type: string
+                    format: uuid
+                    description: 'reservation uuid '
+                    example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                  restaurantUuid:
+                    type: string
+                    format: uuid
+                    description: 'restaurant uuid '
+                    example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                  mealDate:
+                    type:
+                    - string
+                    - 'null'
+                    description: Reservation meal date
+                    example: '2022-01-03T18:10:17.269Z'
+                  mealStatus:
+                    type:
+                    - string
+                    - 'null'
+                    description: Represents steps for the meal while diner is at the table. Meal statuses do not follow any specific flow.
+                    enum:
+                    - PARTIALLY_ARRIVED
+                    - ARRIVED
+                    - SEATED
+                    - BILL
+                    - LEFT
+                    example: ARRIVED
+                  partySize:
+                    type: integer
+                    description: Number of person attending to the reservation
+                    example: 2
+                    exclusiveMinimum: 0
+                  status:
+                    type: string
+                    enum:
+                    - RECORDED
+                    - CANCELED
+                    - NO_SHOW
+                    - REQUESTED
+                    - REFUSED
+                    description: "- Reservation status\n-\n- Main statuses\n  - \\- RECORDED: most frequent status, reservation is confirmed\n  - \\- CANCELED: reservation has been canceled\n  - \\- NO_SHOW: reservation has been flagged as no-show\n-\n- Secondary statuses\n  - \\- REQUESTED: Reservation is waiting for a an action from the restaurant (on request booking or Waitlist) - not confirmed yet\n  - \\- REFUSED: final state if a requested reservation has been declined by the restaurant"
+                    example: RECORDED
+                  offerUuid:
+                    type:
+                    - string
+                    - 'null'
+                    format: uuid
+                    example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                  customerNote:
+                    type:
+                    - string
+                    - 'null'
+                    maxLength: 1000
+                    description: Special request field that the diner can enter while making the reservation
+                    example: note by the customer
+                  restaurantNote:
+                    type:
+                    - string
+                    - 'null'
+                    maxLength: 3000
+                    description: Internal notes for the restaurant staff
+                    example: note by the restaurant
+                  customer:
+                    type:
+                    - object
+                    - 'null'
+                    properties:
+                      customerUuid:
+                        type: string
+                        format: uuid
+                        description: Customer UUID
+                        example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                      email:
+                        type:
+                        - string
+                        - 'null'
+                        example: john@example.com
+                      firstName:
+                        type:
+                        - string
+                        - 'null'
+                        example: Doe
+                      lastName:
+                        type:
+                        - string
+                        - 'null'
+                        example: John
+                      phone:
+                        type:
+                        - string
+                        - 'null'
+                        example: '+33612345678'
+                      locale:
+                        type:
+                        - string
+                        - 'null'
+                        pattern: ^([a-z]{2,3})(?:_([A-Z]{2}))?$
+                        example: fr_FR
+                      civility:
+                        type:
+                        - string
+                        - 'null'
+                        example: mr
+                      optins:
+                        type: object
+                        properties:
+                          restaurantNewsletter:
+                            type: boolean
+                            default: false
+                            description: Optin the diner to the restaurant newsletter, when false is provided it will not unsubscribe the diner
+                            example: true
+                        default:
+                          restaurantNewsletter: false
+                        additionalProperties: false
+                    required:
+                    - customerUuid
+                    - email
+                    - firstName
+                    - lastName
+                    - phone
+                    - locale
+                    - civility
+                    additionalProperties: false
+                required:
+                - reservationUuid
+                - restaurantUuid
+                - mealDate
+                - partySize
+                - status
+                - customer
+                additionalProperties: false
+        '401':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - ''
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Unauthorized
+                  statusCode:
+                    type: number
+                    enum:
+                    - 401
+                required:
+                - data
+                - error
+                - statusCode
+        '404':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - Restaurant not found
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Not Found
+                  statusCode:
+                    type: number
+                    enum:
+                    - 404
+                required:
+                - data
+                - error
+                - statusCode
+        '409':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - DOUBLE_BOOKING
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Conflict
+                  statusCode:
+                    type: number
+                    enum:
+                    - 409
+                required:
+                - data
+                - error
+                - statusCode
+      x-source-page: https://docs.thefork.io/B2B-API/API specifications/post-v-1-restaurants-id-reservations-26a
+      x-source-asset: https://docs.thefork.io/assets/js/5850bee5.184d5e38.js
+  /v1/restaurants/{id}/timeslots:
+    get:
+      operationId: getV1RestaurantsIdTimeslots
+      tags:
+      - Booking flow
+      description: Get list of time slots for a given restaurant and date.
+      parameters:
+      - schema:
+          type: string
+          format: uuid
+          description: restaurant uuid that needs to be considered for filter
+          example: c564869f-225a-4cb6-b124-2214a6216ec1
+        required: true
+        description: restaurant uuid that needs to be considered for filter
+        name: id
+        in: path
+      - schema:
+          type: string
+          format: date
+          description: date that needs to be considered for filter
+          example: '2022-01-01'
+        required: true
+        description: date that needs to be considered for filter
+        name: date
+        in: query
+      - schema:
+          type: string
+          format: uuid
+          description: offer uuid that may be considered for filter
+          example: a114c986-9d5b-4c34-a86b-427137dae3d4
+        required: false
+        description: offer uuid that may be considered for filter
+        name: offerUuid
+        in: query
+      - schema:
+          type: number
+          description: party size that may be considered for filter
+          example: 2
+          exclusiveMinimum: 0
+        required: false
+        description: party size that may be considered for filter
+        name: partySize
+        in: query
+      responses:
+        '200':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  properties:
+                    datetime:
+                      type:
+                      - string
+                      - 'null'
+                      description: Date and time of the timeslot
+                      example: '2022-01-01T12:30:00+01:00'
+                    offers:
+                      type:
+                      - array
+                      - 'null'
+                      items:
+                        type: string
+                        format: uuid
+                        example: a114c986-9d5b-4c34-a86b-427137dae3d4
+                      description: List of offer uuids linked to the timeslot
+                    hasNormalStock:
+                      type: boolean
+                      description: Has availability for reservation without offer
+                      example: true
+                    hasPaymentGuaranteeRequirement:
+                      type: boolean
+                      description: This timeslot requires a payment guarantee. If true at least one offer and/or the normal stock is protected by a guarantee requirement
+                      example: true
+                    guaranteeRequirementList:
+                      type: array
+                      items:
+                        type: object
+                        properties:
+                          guaranteeType:
+                            type: string
+                            enum:
+                            - imprint
+                            - prepayment
+                            example: imprint
+                          amount:
+                            type: integer
+                            minimum: 0
+                            description: amount of the guarantee (in euros)
+                            example: 10
+                          minimumCancellationHours:
+                            type: integer
+                            description: minimum amount of hours needed before the mealdate in case of cancellation
+                            example: 24
+                          minimumPartySize:
+                            type: integer
+                            description: minimum party size for which this guarantee requirement applies. If it applies to all party sizes, minimumPartySize will be equal to 0
+                            example: 2
+                          offerUuid:
+                            type: string
+                            format: uuid
+                            description: offer uuid linked to the guarantee requirement. If no offerUuid is present, we are dealing with the normal stock
+                        required:
+                        - guaranteeType
+                        - amount
+                        - minimumCancellationHours
+                        - minimumPartySize
+                        additionalProperties: false
+                      description: Detail of the guarantee requirement (will have at least 1 object if the hasPaymentGuaranteeRequirement is true)
+                  required:
+                  - datetime
+                  - hasNormalStock
+                  - hasPaymentGuaranteeRequirement
+                  - guaranteeRequirementList
+                  additionalProperties: false
+        '401':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - ''
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Unauthorized
+                  statusCode:
+                    type: number
+                    enum:
+                    - 401
+                required:
+                - data
+                - error
+                - statusCode
+        '404':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - RESTAURANT_NOT_FOUND
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Not Found
+                  statusCode:
+                    type: number
+                    enum:
+                    - 404
+                required:
+                - data
+                - error
+                - statusCode
+      x-source-page: https://docs.thefork.io/B2B-API/API specifications/get-v-1-restaurants-id-timeslots-064
+      x-source-asset: https://docs.thefork.io/assets/js/5050e1a8.abc70081.js

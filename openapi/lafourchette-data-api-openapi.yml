@@ -1,0 +1,866 @@
+openapi: 3.2.0
+info:
+  title: TheFork B2B Data API
+  version: 1.0.0
+  description: TheFork (LA FOURCHETTE SAS) B2B / Partners API for TheFork Manager (TFM). Lets restaurant groups, CRM platforms and third-party partners read customers, reservations and reviews, drive the booking funnel (availabilities, offers, party sizes, timeslots, create/update/cancel reservations), reply to reviews, and run call-centre caller recognition. Access is granted by TheFork; authentication is an Auth0 client-credentials access token presented as a bearer token (audience https://api.thefork.io).
+  contact:
+    name: TheFork integrations team
+    email: integrations@thefork.com
+    url: https://docs.thefork.io/
+  termsOfService: https://docs.thefork.io/pdf/LaFourchette-Partners-API-Licence-2.pdf
+  x-provenance: Reconstructed by API Evangelist from the OpenAPI operation objects TheFork itself publishes in the compiled assets of its Docusaurus developer portal (docs.thefork.io, docusaurus-plugin-openapi-docs). TheFork does not serve a single downloadable OpenAPI document at any probed URL; every path, operationId, parameter, request body, response and schema below is verbatim provider content decoded from those published page bundles. Nothing here was authored by API Evangelist.
+  x-source-title: B2B-API specifications
+servers:
+- url: https://api.thefork.io/manager
+tags:
+- name: Data
+paths:
+  /v1/customers:
+    get:
+      operationId: getV1Customers
+      tags:
+      - Data
+      description: Get the list of customers created or updated between two dates.
+      parameters:
+      - schema:
+          type: string
+          format: uuid
+          description: group uuid that needs to be considered for filter
+          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        required: true
+        description: group uuid that needs to be considered for filter
+        name: groupUuid
+        in: query
+      - schema:
+          type: string
+          format: date
+          description: start date that needs to be considered for filter
+          example: '2022-01-01'
+        required: true
+        description: start date that needs to be considered for filter
+        name: startDate
+        in: query
+      - schema:
+          type: string
+          format: date
+          description: end date that needs to be considered for filter
+          example: '2022-09-02'
+        required: true
+        description: end date that needs to be considered for filter
+        name: endDate
+        in: query
+      - schema:
+          type: number
+          maximum: 10000
+          description: limit of the number of customers to return (default to 100)
+          example: 100
+          exclusiveMinimum: 0
+        required: false
+        description: limit of the number of customers to return (default to 100)
+        name: limit
+        in: query
+      - schema:
+          type: number
+          description: customers page to return (default to 1)
+          example: 1
+          exclusiveMinimum: 0
+        required: false
+        description: customers page to return (default to 1)
+        name: page
+        in: query
+      responses:
+        '200':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: string
+                      format: uuid
+                      example: 3fa85f64-5717-4562-b3fc-2c963f66afb4
+                    description: List of customers uuids
+                  totalCount:
+                    type: number
+                    description: Total number of matching customers uuids
+                    example: 1
+                  page:
+                    type: number
+                    description: Current page number
+                    example: 1
+                  limit:
+                    type: number
+                    description: Maximum size of the page
+                    example: 100
+                required:
+                - data
+                - totalCount
+                - page
+                - limit
+                additionalProperties: false
+        '401':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - ''
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Unauthorized
+                  statusCode:
+                    type: number
+                    enum:
+                    - 401
+                required:
+                - data
+                - error
+                - statusCode
+      x-source-page: https://docs.thefork.io/B2B-API/API specifications/get-v-1-customers-eb6
+      x-source-asset: https://docs.thefork.io/assets/js/3a1abe1a.3012f03c.js
+  /v1/customers/{id}:
+    get:
+      operationId: getV1CustomersId
+      tags:
+      - Data
+      description: Get the customer details for a given customer id.
+      parameters:
+      - schema:
+          type: string
+          format: uuid
+          description: customer uuid that needs to be considered for filter
+          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        required: true
+        description: customer uuid that needs to be considered for filter
+        name: id
+        in: path
+      responses:
+        '200':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  customerUuid:
+                    type:
+                    - string
+                    - 'null'
+                    format: uuid
+                    description: Customer UUID
+                    example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                  email:
+                    type:
+                    - string
+                    - 'null'
+                    example: john@example.com
+                  firstName:
+                    type:
+                    - string
+                    - 'null'
+                    example: Doe
+                  lastName:
+                    type:
+                    - string
+                    - 'null'
+                    example: John
+                  phone:
+                    type:
+                    - string
+                    - 'null'
+                  birthDate:
+                    type:
+                    - string
+                    - 'null'
+                    example: '1997-12-02'
+                  locale:
+                    type:
+                    - string
+                    - 'null'
+                    example: fr_FR
+                  civility:
+                    type:
+                    - string
+                    - 'null'
+                  rank:
+                    type:
+                    - string
+                    - 'null'
+                  computedRank:
+                    type:
+                    - string
+                    - 'null'
+                  isVip:
+                    type: boolean
+                  address:
+                    type:
+                    - string
+                    - 'null'
+                  allergiesAndIntolerances:
+                    type:
+                    - array
+                    - 'null'
+                    items:
+                      type: string
+                      example: seafood
+                  dietaryRestrictions:
+                    type:
+                    - array
+                    - 'null'
+                    items:
+                      type: string
+                      example: gluten_free
+                  spendingBehaviour:
+                    type:
+                    - array
+                    - 'null'
+                    items:
+                      type: string
+                      example: promo_seeker
+                  customerRelationship:
+                    type:
+                    - array
+                    - 'null'
+                    items:
+                      type: string
+                      example: employee
+                  riskLevel:
+                    type:
+                    - array
+                    - 'null'
+                    items:
+                      type: string
+                      example: caution
+                  otherTags:
+                    type:
+                    - array
+                    - 'null'
+                    items:
+                      type: string
+                      example: wine_lover
+                  favFood:
+                    type:
+                    - string
+                    - 'null'
+                    example: Burger
+                  favDrinks:
+                    type:
+                    - string
+                    - 'null'
+                    example: Punk IPA
+                  favSeating:
+                    type:
+                    - string
+                    - 'null'
+                    example: Terrace
+                  notes:
+                    type:
+                    - string
+                    - 'null'
+                  originRestaurantUuid:
+                    type:
+                    - string
+                    - 'null'
+                    example: ddc14c13-98ce-4ece-9c82-98f84050f6f5
+                  originRestaurantName:
+                    type:
+                    - string
+                    - 'null'
+                    example: 587850fc-abd7-4486-a61a-aa05b2fbba84
+                  creationDate:
+                    type:
+                    - string
+                    - 'null'
+                    description: Creation date
+                    example: '2022-09-02'
+                  lastUpdateDate:
+                    type:
+                    - string
+                    - 'null'
+                    description: Last update date
+                    example: '2022-09-30'
+                  isPromoter:
+                    type: boolean
+                  secondaryPhone:
+                    type:
+                    - string
+                    - 'null'
+                  country:
+                    type:
+                    - string
+                    - 'null'
+                    example: FR
+                  city:
+                    type:
+                    - string
+                    - 'null'
+                    example: Paris
+                  zipcode:
+                    type:
+                    - string
+                    - 'null'
+                    example: '75001'
+                  optins:
+                    type: object
+                    properties:
+                      restaurantNewsletter:
+                        type: boolean
+                        default: false
+                        description: Optin the diner to the restaurant newsletter, when false is provided it will not unsubscribe the diner
+                        example: true
+                    default:
+                      restaurantNewsletter: false
+                    additionalProperties: false
+                  customFields:
+                    type:
+                    - array
+                    - 'null'
+                    items:
+                      type: object
+                      properties:
+                        labelUuid:
+                          type: string
+                          format: uuid
+                          description: Label UUID
+                          example: 55749b38-b822-4ece-b976-65a1458c6d47
+                        label:
+                          type: string
+                          description: Label value
+                          example: Regular lunch customer
+                        type:
+                          type: string
+                          enum:
+                          - boolean
+                          - string
+                          - integer
+                        value:
+                          anyOf:
+                          - type: string
+                          - type: boolean
+                          - type: number
+                          - type: string
+                            enum:
+                            - ''
+                          description: Custom field value
+                          example: true
+                        valueUuid:
+                          type:
+                          - string
+                          - 'null'
+                          format: uuid
+                          description: Value UUID
+                          example: ada0f099-4e3d-47da-addd-1d449082fc34
+                      required:
+                      - labelUuid
+                      - label
+                      - type
+                      - value
+                      additionalProperties: false
+                required:
+                - email
+                - firstName
+                - lastName
+                - locale
+                - notes
+                - creationDate
+                - lastUpdateDate
+                additionalProperties: false
+        '401':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - ''
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Unauthorized
+                  statusCode:
+                    type: number
+                    enum:
+                    - 401
+                required:
+                - data
+                - error
+                - statusCode
+        '404':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - CUSTOMER_NOT_FOUND
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Not Found
+                  statusCode:
+                    type: number
+                    enum:
+                    - 404
+                required:
+                - data
+                - error
+                - statusCode
+      x-source-page: https://docs.thefork.io/B2B-API/API specifications/get-v-1-customers-id-11e
+      x-source-asset: https://docs.thefork.io/assets/js/bf653d7c.944b4da4.js
+  /v1/reservations:
+    get:
+      operationId: getV1Reservations
+      tags:
+      - Data
+      description: Get the list of reservations filtered by a date range. Use filterBy to filter by updatedDate (default) or mealDate.
+      parameters:
+      - schema:
+          type: string
+          format: uuid
+          description: group uuid that needs to be considered for filter (required if restaurantUuid is not provided)
+          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        required: false
+        description: group uuid that needs to be considered for filter (required if restaurantUuid is not provided)
+        name: groupUuid
+        in: query
+      - schema:
+          type: string
+          format: uuid
+          description: restaurant uuid that needs to be considered for filter (required if groupUuid is not provided)
+          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        required: false
+        description: restaurant uuid that needs to be considered for filter (required if groupUuid is not provided)
+        name: restaurantUuid
+        in: query
+      - schema:
+          type: string
+          format: date
+          description: start date that needs to be considered for filter
+          example: '2022-01-01'
+        required: true
+        description: start date that needs to be considered for filter
+        name: startDate
+        in: query
+      - schema:
+          type: string
+          format: date
+          description: end date that needs to be considered for filter
+          example: '2022-09-02'
+        required: true
+        description: end date that needs to be considered for filter
+        name: endDate
+        in: query
+      - schema:
+          type: string
+          enum:
+          - updatedDate
+          - mealDate
+          description: 'date field to filter reservations by (default: updatedDate)'
+          example: mealDate
+        required: false
+        description: 'date field to filter reservations by (default: updatedDate)'
+        name: filterBy
+        in: query
+      - schema:
+          type: number
+          maximum: 10000
+          description: limit of the number of reservations to return (default to 100)
+          example: 100
+          exclusiveMinimum: 0
+        required: false
+        description: limit of the number of reservations to return (default to 100)
+        name: limit
+        in: query
+      - schema:
+          type: number
+          description: reservations page to return (default to 1)
+          example: 1
+          exclusiveMinimum: 0
+        required: false
+        description: reservations page to return (default to 1)
+        name: page
+        in: query
+      responses:
+        '200':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: string
+                      format: uuid
+                      example: 3fa85f64-5717-4562-b3fc-2c963f66afb4
+                    description: List of reservation uuids
+                  totalCount:
+                    type: number
+                    description: Total number of matching reservation uuids
+                    example: 1
+                  page:
+                    type: number
+                    description: Current page number
+                    example: 1
+                  limit:
+                    type: number
+                    description: Maximum size of the page
+                    example: 100
+                required:
+                - data
+                - totalCount
+                - page
+                - limit
+                additionalProperties: false
+        '401':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - ''
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Unauthorized
+                  statusCode:
+                    type: number
+                    enum:
+                    - 401
+                required:
+                - data
+                - error
+                - statusCode
+      x-source-page: https://docs.thefork.io/B2B-API/API specifications/get-v-1-reservations-60c
+      x-source-asset: https://docs.thefork.io/assets/js/c0eb8405.19828b52.js
+  /v1/reservations/{id}:
+    get:
+      operationId: getV1ReservationsId
+      tags:
+      - Data
+      description: Get the reservation details for a given reservation id.
+      parameters:
+      - schema:
+          type: string
+          format: uuid
+          description: restaurant uuid that needs to be considered for filter
+          example: c564869f-225a-4cb6-b124-2214a6216ec1
+        required: true
+        description: restaurant uuid that needs to be considered for filter
+        name: id
+        in: path
+      responses:
+        '200':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reservationUuid:
+                    type: string
+                    format: uuid
+                    description: 'reservation uuid '
+                    example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                  restaurantUuid:
+                    type: string
+                    format: uuid
+                    description: 'restaurant uuid '
+                    example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                  mealDate:
+                    type:
+                    - string
+                    - 'null'
+                    description: Reservation meal date
+                    example: '2022-01-03T18:10:17.269Z'
+                  mealStatus:
+                    type:
+                    - string
+                    - 'null'
+                    description: Represents steps for the meal while diner is at the table. Meal statuses do not follow any specific flow.
+                    enum:
+                    - PARTIALLY_ARRIVED
+                    - ARRIVED
+                    - SEATED
+                    - BILL
+                    - LEFT
+                    example: ARRIVED
+                  partySize:
+                    type: integer
+                    description: Number of person attending to the reservation
+                    example: 2
+                    exclusiveMinimum: 0
+                  status:
+                    type: string
+                    enum:
+                    - RECORDED
+                    - CANCELED
+                    - NO_SHOW
+                    - REQUESTED
+                    - REFUSED
+                    description: "- Reservation status\n-\n- Main statuses\n  - \\- RECORDED: most frequent status, reservation is confirmed\n  - \\- CANCELED: reservation has been canceled\n  - \\- NO_SHOW: reservation has been flagged as no-show\n-\n- Secondary statuses\n  - \\- REQUESTED: Reservation is waiting for a an action from the restaurant (on request booking or Waitlist) - not confirmed yet\n  - \\- REFUSED: final state if a requested reservation has been declined by the restaurant"
+                    example: RECORDED
+                  offerUuid:
+                    type:
+                    - string
+                    - 'null'
+                    format: uuid
+                    example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                  customerNote:
+                    type:
+                    - string
+                    - 'null'
+                    maxLength: 1000
+                    description: Special request field that the diner can enter while making the reservation
+                    example: note by the customer
+                  restaurantNote:
+                    type:
+                    - string
+                    - 'null'
+                    maxLength: 3000
+                    description: Internal notes for the restaurant staff
+                    example: note by the restaurant
+                  customerUuid:
+                    type:
+                    - string
+                    - 'null'
+                    format: uuid
+                    description: Customer UUID
+                    example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+                  customFields:
+                    type:
+                    - array
+                    - 'null'
+                    items:
+                      type: object
+                      properties:
+                        labelUuid:
+                          type: string
+                          format: uuid
+                          description: Label UUID
+                          example: 55749b38-b822-4ece-b976-65a1458c6d47
+                        label:
+                          type: string
+                          description: Label value
+                          example: Regular lunch customer
+                        type:
+                          type: string
+                          enum:
+                          - boolean
+                          - string
+                          - integer
+                        value:
+                          anyOf:
+                          - type: string
+                          - type: boolean
+                          - type: number
+                          description: Custom field value
+                          example: true
+                        valueUuid:
+                          type:
+                          - string
+                          - 'null'
+                          format: uuid
+                          description: Value UUID
+                          example: ada0f099-4e3d-47da-addd-1d449082fc34
+                      required:
+                      - labelUuid
+                      - label
+                      - type
+                      - value
+                      additionalProperties: false
+                  offerDetails:
+                    type:
+                    - object
+                    - 'null'
+                    properties:
+                      offerType:
+                        type: string
+                        enum:
+                        - promotion
+                        - presetMenu
+                      name:
+                        type:
+                        - object
+                        - 'null'
+                        properties: {}
+                      discountPercentage:
+                        type:
+                        - number
+                        - 'null'
+                      presetMenuType:
+                        type:
+                        - string
+                        - 'null'
+                        enum:
+                        - generic
+                        - group
+                        - of_the_day
+                        - brunch
+                        - experience
+                        - mastercard
+                      price:
+                        type:
+                        - number
+                        - 'null'
+                      currency:
+                        type:
+                        - string
+                        - 'null'
+                    required:
+                    - offerType
+                    additionalProperties: false
+                  utmTrackingInformation:
+                    type:
+                    - array
+                    - 'null'
+                    items:
+                      type: object
+                      properties:
+                        key:
+                          type: string
+                        value:
+                          type: string
+                      required:
+                      - key
+                      - value
+                      additionalProperties: false
+                  billAmount:
+                    type:
+                    - object
+                    - 'null'
+                    properties:
+                      totalPrice:
+                        type: number
+                      currency:
+                        type: string
+                    required:
+                    - totalPrice
+                    - currency
+                    additionalProperties: false
+                  reservationChannel:
+                    type: string
+                    enum:
+                    - TripAdvisor
+                    - Michelin
+                    - Booking Module
+                    - Offline
+                    - TheFork
+                    - Walk-in
+                    - Google
+                    - Cross Sell
+                    - TheFork Manager API
+                  createdAt:
+                    type:
+                    - string
+                    - 'null'
+                  updatedAt:
+                    type:
+                    - string
+                    - 'null'
+                required:
+                - reservationUuid
+                - restaurantUuid
+                - mealDate
+                - partySize
+                - status
+                - reservationChannel
+                - createdAt
+                additionalProperties: false
+        '401':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - ''
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Unauthorized
+                  statusCode:
+                    type: number
+                    enum:
+                    - 401
+                required:
+                - data
+                - error
+                - statusCode
+        '404':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - RESERVATION_NOT_FOUND
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Not Found
+                  statusCode:
+                    type: number
+                    enum:
+                    - 404
+                required:
+                - data
+                - error
+                - statusCode
+      x-source-page: https://docs.thefork.io/B2B-API/API specifications/get-v-1-reservations-id-f82
+      x-source-asset: https://docs.thefork.io/assets/js/41c4f519.2f982757.js

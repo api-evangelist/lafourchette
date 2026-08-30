@@ -1,0 +1,799 @@
+openapi: 3.2.0
+info:
+  title: TheFork B2B Review flow API
+  version: 1.0.0
+  description: TheFork (LA FOURCHETTE SAS) B2B / Partners API for TheFork Manager (TFM). Lets restaurant groups, CRM platforms and third-party partners read customers, reservations and reviews, drive the booking funnel (availabilities, offers, party sizes, timeslots, create/update/cancel reservations), reply to reviews, and run call-centre caller recognition. Access is granted by TheFork; authentication is an Auth0 client-credentials access token presented as a bearer token (audience https://api.thefork.io).
+  contact:
+    name: TheFork integrations team
+    email: integrations@thefork.com
+    url: https://docs.thefork.io/
+  termsOfService: https://docs.thefork.io/pdf/LaFourchette-Partners-API-Licence-2.pdf
+  x-provenance: Reconstructed by API Evangelist from the OpenAPI operation objects TheFork itself publishes in the compiled assets of its Docusaurus developer portal (docs.thefork.io, docusaurus-plugin-openapi-docs). TheFork does not serve a single downloadable OpenAPI document at any probed URL; every path, operationId, parameter, request body, response and schema below is verbatim provider content decoded from those published page bundles. Nothing here was authored by API Evangelist.
+  x-source-title: B2B-API specifications
+servers:
+- url: https://api.thefork.io/manager
+tags:
+- name: Review flow
+paths:
+  /v1/reviews:
+    get:
+      operationId: getV1Reviews
+      tags:
+      - Review flow
+      description: Get the list of moderated reviews created or updated between two dates.
+      parameters:
+      - schema:
+          type: string
+          format: uuid
+          description: UUID of the restaurant
+          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        required: true
+        description: UUID of the restaurant
+        name: restaurantUuid
+        in: query
+      - schema:
+          type: string
+          format: date
+          description: ISO 8601 start date to filter
+          example: '2022-01-01'
+        required: true
+        description: ISO 8601 start date to filter
+        name: startDate
+        in: query
+      - schema:
+          type: string
+          format: date
+          description: ISO 8601 end date to filter. Must be greater than start date
+          example: '2022-09-02'
+        required: true
+        description: ISO 8601 end date to filter. Must be greater than start date
+        name: endDate
+        in: query
+      - schema:
+          type:
+          - boolean
+          - 'null'
+          default: false
+          description: Filter reviews with customer comments only
+          example: false
+        required: false
+        description: Filter reviews with customer comments only
+        name: withCommentOnly
+        in: query
+      - schema:
+          type: integer
+          minimum: 1
+          maximum: 100
+          default: 50
+          description: Maximum number of reviews per page
+          example: 50
+        required: false
+        description: Maximum number of reviews per page
+        name: limit
+        in: query
+      - schema:
+          type: integer
+          minimum: 1
+          default: 1
+          description: Page number for pagination
+          example: 1
+        required: false
+        description: Page number for pagination
+        name: page
+        in: query
+      responses:
+        '200':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: string
+                      format: uuid
+                      example: 3fa85f64-5717-4562-b3fc-2c963f66afb4
+                    description: List of the review UUIDs
+                  hasNext:
+                    type: boolean
+                    description: Indicates if there are more reviews available on the next page
+                required:
+                - data
+                - hasNext
+                additionalProperties: false
+        '401':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - ''
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Unauthorized
+                  statusCode:
+                    type: number
+                    enum:
+                    - 401
+                required:
+                - data
+                - error
+                - statusCode
+      x-source-page: https://docs.thefork.io/B2B-API/API specifications/get-v-1-reviews-a67
+      x-source-asset: https://docs.thefork.io/assets/js/d8d87436.3f8c906a.js
+  /v1/reviews/{id}:
+    get:
+      operationId: getV1ReviewsId
+      tags:
+      - Review flow
+      description: Get the review details for a given review UUID.
+      parameters:
+      - schema:
+          type: string
+          format: uuid
+          description: UUID of the review to retrieve
+          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        required: true
+        description: UUID of the review to retrieve
+        name: id
+        in: path
+      responses:
+        '200':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reviewUuid:
+                    type: string
+                    format: uuid
+                    description: UUID of the review
+                    example: 6f5fdab1-c91a-11ef-8d9e-0e8af7bd4d53
+                  restaurantUuid:
+                    type: string
+                    format: uuid
+                    description: UUID of the reviewed restaurant
+                    example: 084c0650-9b8e-4357-bebe-5fad1c069051
+                  isValid:
+                    type: boolean
+                    description: Indicates whether the review is valid
+                    example: false
+                  createdTs:
+                    type: string
+                    format: date-time
+                    description: ISO 8601 UTC date and time when the review was created
+                    example: '2025-01-02T15:01:24.898Z'
+                  updatedTs:
+                    type: string
+                    format: date-time
+                    description: ISO 8601 UTC date and time when the review was last updated
+                    example: '2025-01-02T15:01:24.898Z'
+                  reservation:
+                    type: object
+                    properties:
+                      reservationUuid:
+                        type:
+                        - string
+                        - 'null'
+                        format: uuid
+                        description: UUID of the reservation
+                        example: 772decf1-8f6f-4676-af3d-823413203fc2
+                      mealDate:
+                        type:
+                        - string
+                        - 'null'
+                        format: date-time
+                        description: ISO 8601 UTC date and time when the meal took place
+                        example: '2025-01-02T11:30:00.000Z'
+                    required:
+                    - reservationUuid
+                    - mealDate
+                    additionalProperties: false
+                    description: Details of the reservation for which this review was submitted.
+                  customer:
+                    type: object
+                    properties:
+                      customerUuid:
+                        type: string
+                        format: uuid
+                        description: UUID of the customer
+                        example: d839a3e5-7d20-467d-90d8-4c1f5e303d36
+                      firstName:
+                        type:
+                        - string
+                        - 'null'
+                        description: First name of the customer
+                        example: John
+                      lastName:
+                        type:
+                        - string
+                        - 'null'
+                        description: Last name of the customer
+                        example: Doe
+                    required:
+                    - customerUuid
+                    - firstName
+                    - lastName
+                    additionalProperties: false
+                    description: Details of the customer who submitted this review.
+                  dinerRating:
+                    type: object
+                    properties:
+                      globalRating:
+                        type:
+                        - number
+                        - 'null'
+                        minimum: 0
+                        maximum: 10
+                        description: Overall rating
+                        example: 8
+                      ambienceRating:
+                        type:
+                        - integer
+                        - 'null'
+                        minimum: 0
+                        maximum: 10
+                        description: Rating for restaurant ambience
+                        example: 8
+                      foodQualityRating:
+                        type:
+                        - integer
+                        - 'null'
+                        minimum: 0
+                        maximum: 10
+                        description: Rating for food quality
+                        example: 8
+                      serviceRating:
+                        type:
+                        - integer
+                        - 'null'
+                        minimum: 0
+                        maximum: 10
+                        description: Rating for service quality
+                        example: 8
+                      priceEvaluation:
+                        type:
+                        - string
+                        - 'null'
+                        enum:
+                        - VERY_CHEAP
+                        - CHEAP
+                        - AVERAGE
+                        - EXPENSIVE
+                        - VERY_EXPENSIVE
+                        description: Customer evaluation of price level
+                        example: CHEAP
+                      waitingTimeEvaluation:
+                        type:
+                        - string
+                        - 'null'
+                        enum:
+                        - VERY_FAST
+                        - FAST
+                        - AVERAGE
+                        - SLOW
+                        - VERY_SLOW
+                        description: Customer evaluation of waiting time
+                        example: FAST
+                      noiseLevelEvaluation:
+                        type:
+                        - string
+                        - 'null'
+                        enum:
+                        - VERY_QUIET
+                        - QUIET
+                        - MODERATE
+                        - LOUD
+                        - VERY_LOUD
+                        description: Customer evaluation of noise level
+                        example: QUIET
+                    required:
+                    - globalRating
+                    - ambienceRating
+                    - foodQualityRating
+                    - serviceRating
+                    - priceEvaluation
+                    - waitingTimeEvaluation
+                    - noiseLevelEvaluation
+                    additionalProperties: false
+                    description: Detailed ratings provided by the customer
+                  comment:
+                    type:
+                    - object
+                    - 'null'
+                    properties:
+                      content:
+                        type: string
+                        minLength: 1
+                        description: Text content of the comment, may include escape sequences
+                      language:
+                        type:
+                        - string
+                        - 'null'
+                        pattern: ^[a-z]{2,3}$
+                        description: ISO 639 language code of the comment
+                        example: en
+                      publicationStatus:
+                        type: string
+                        enum:
+                        - NOT_REVIEWED
+                        - REJECTED
+                        - PUBLISHED
+                        - WAITING_REFORMULATE
+                        - ARCHIVED
+                        - DELETED
+                        description: Publication status of the comment
+                        example: PUBLISHED
+                      createdTs:
+                        type: string
+                        format: date-time
+                        description: ISO 8601 UTC date and time when the comment was created
+                        example: '2025-01-02T15:01:24.898Z'
+                      updatedTs:
+                        type: string
+                        format: date-time
+                        description: ISO 8601 UTC date and time when the comment was last updated
+                        example: '2025-01-02T15:01:24.898Z'
+                      publishedTs:
+                        type:
+                        - string
+                        - 'null'
+                        format: date-time
+                        description: ISO 8601 UTC date and time when the comment was published
+                        example: '2025-01-02T15:08:58.208Z'
+                      moderationReason:
+                        type:
+                        - string
+                        - 'null'
+                        enum:
+                        - PUBLISH_BOOKING_NOT_TAKEN_INTO_ACCOUNT
+                        - PUBLISH_GENERIC_TEMPLATE_PUBLISH
+                        - PUBLISH_OFFER_NOT_APPLIED
+                        - PUBLISH_OFFER_PARTIALLY_APPLIED
+                        - PUBLISH_REPORT_ISSUE_R_PAGE
+                        - PUBLISH_YUMS_DISCOUNT_NOT_APPLIED
+                        - REFORMULATE_CAPITAL_LETTERS
+                        - REFORMULATE_COMPARE_RS
+                        - REFORMULATE_DISCRIMINATORY
+                        - REFORMULATE_FOOD_POISONING
+                        - REFORMULATE_GENERIC_TEMPLATE_REFORMULATE
+                        - REFORMULATE_INCOHERENT_NOTATION
+                        - REFORMULATE_IRRELEVANT_CONTENT
+                        - REFORMULATE_LINKS_PERSONAL_DATA
+                        - REFORMULATE_OFFENSIVE_LANGUAGE
+                        - REFORMULATE_OFFER_NOT_APPLIED
+                        - REFORMULATE_OFFER_REFUSED_JUSTLY_BOOKING
+                        - REFORMULATE_OFFER_REFUSED_JUSTLY_CONDITIONS
+                        - REFORMULATE_SERIOUS_DAMAGING_ACCUSATIONS
+                        - REFORMULATE_SIMILAR_REVIEWS
+                        - REFORMULATE_THE_FORK_PAY_NOT_AVAILABLE
+                        - REFORMULATE_UNFINISHED_REVIEW
+                        - REFORMULATE_USER_REQUEST_TO_MODIFY_REVIEW
+                        - REFORMULATE_USER_REVIEWING_ANOTHER_R
+                        - REFORMULATE_VIOLENT_CONTENT
+                        - REJECT_CONFLICT_OF_INTERESTS_OR_FRAUD
+                        - REJECT_CUSTOMER_NOT_FOLLOW_MODERATION_RULES
+                        - REJECT_DISCOUNT_APPLIED_R_PROVIDED_PROOF
+                        - REJECT_GENERIC_TEMPLATE_REJECT
+                        - REJECT_REFORMULATION_PERIOD_ENDED
+                        - REJECT_RESTAURANT_CLOSED
+                        - REJECT_RESTAURANT_CLOSED_NO_COMPENSATION
+                        - REJECT_USER_CANCELLATION
+                        - REJECT_USER_NOT_PRESENT_IN_R
+                        - REJECT_USER_REQUEST_TO_REMOVE_REVIEW
+                        - REJECT_VIOLATION_ARTICLE_252
+                        description: Moderation reason associated with the comment
+                        example: REFORMULATE_CAPITAL_LETTERS
+                    required:
+                    - content
+                    - language
+                    - publicationStatus
+                    - createdTs
+                    - updatedTs
+                    - publishedTs
+                    - moderationReason
+                    additionalProperties: false
+                    description: Customer comment about their experience
+                  experienceDetail:
+                    type:
+                    - object
+                    - 'null'
+                    properties:
+                      occasion:
+                        type:
+                        - string
+                        - 'null'
+                        enum:
+                        - BUSINESS
+                        - FRIENDS
+                        - ROMANTIC
+                        - FAMILY
+                        - ALONE
+                        description: Type of occasion for the dining experience
+                        example: ROMANTIC
+                    required:
+                    - occasion
+                    additionalProperties: false
+                    description: Additional details about the dining experience
+                  restaurantReply:
+                    type:
+                    - object
+                    - 'null'
+                    properties:
+                      content:
+                        type: string
+                        minLength: 1
+                        description: Text content of the comment, may include escape sequences
+                      language:
+                        type:
+                        - string
+                        - 'null'
+                        pattern: ^[a-z]{2,3}$
+                        description: ISO 639 language code of the comment
+                        example: en
+                      publicationStatus:
+                        type: string
+                        enum:
+                        - NOT_REVIEWED
+                        - REJECTED
+                        - PUBLISHED
+                        - WAITING_REFORMULATE
+                        - ARCHIVED
+                        - DELETED
+                        description: Publication status of the comment
+                        example: PUBLISHED
+                      createdTs:
+                        type: string
+                        format: date-time
+                        description: ISO 8601 UTC date and time when the comment was created
+                        example: '2025-01-02T15:01:24.898Z'
+                      updatedTs:
+                        type: string
+                        format: date-time
+                        description: ISO 8601 UTC date and time when the comment was last updated
+                        example: '2025-01-02T15:01:24.898Z'
+                      publishedTs:
+                        type:
+                        - string
+                        - 'null'
+                        format: date-time
+                        description: ISO 8601 UTC date and time when the comment was published
+                        example: '2025-01-02T15:08:58.208Z'
+                      moderationReason:
+                        type:
+                        - string
+                        - 'null'
+                        enum:
+                        - REFORMULATE_REPLY_IRRELEVANT_CONTENT
+                        - REFORMULATE_REPLY_PROFANITY
+                        - REFORMULATE_REPLY_INCORRECT_INFORMATION
+                        - REFORMULATE_REPLY_SPAM
+                        - REFORMULATE_REPLY_THREATENING_LANGUAGE
+                        - REFORMULATE_REPLY_CONFIDENTIAL_TF_INFO
+                        - REFORMULATE_REPLY_PRIVATE_DATA
+                        - REFORMULATE_REPLY_INAPROPRIATE_CONTENT
+                        - REFORMULATE_REPLY_NOT_COMPLIANT
+                        - REFORMULATE_REPLY_VIOLENCE
+                        - REFORMULATE_REPLY_DISCRIMINATORY
+                        - REFORMULATE_REPLY_RESTAURANT_REQUEST
+                        - REFORMULATE_REPLY_HARASSMENT_LANGUAGE
+                        - REFORMULATE_REPLY_INAUTHENTIC
+                        - REFORMULATE_REPLY_ALL_CAPS_UNINTELLIGIBLE_NON_ORIGINAL_CONTENT
+                        - REJECT_REPLY_NOT_COMPLIANT
+                        - REJECT_REPLY_REFORMULATION_PERIOD_ENDED
+                        - REJECT_REPLY_RESTAURANT_REQUEST
+                        description: Moderation reason associated with the comment
+                        example: REFORMULATE_REPLY_SPAM
+                    required:
+                    - content
+                    - language
+                    - publicationStatus
+                    - createdTs
+                    - updatedTs
+                    - publishedTs
+                    - moderationReason
+                    additionalProperties: false
+                    description: Restaurant reply to the customer review
+                required:
+                - reviewUuid
+                - restaurantUuid
+                - isValid
+                - createdTs
+                - updatedTs
+                - reservation
+                - customer
+                - dinerRating
+                - comment
+                - experienceDetail
+                - restaurantReply
+                additionalProperties: false
+        '401':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - ''
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Unauthorized
+                  statusCode:
+                    type: number
+                    enum:
+                    - 401
+                required:
+                - data
+                - error
+                - statusCode
+        '404':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - REVIEW_NOT_FOUND
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Not Found
+                  statusCode:
+                    type: number
+                    enum:
+                    - 404
+                required:
+                - data
+                - error
+                - statusCode
+      x-source-page: https://docs.thefork.io/B2B-API/API specifications/get-v-1-reviews-id-edd
+      x-source-asset: https://docs.thefork.io/assets/js/1e58232b.59dfff32.js
+  /v1/reviews/{id}/reply:
+    put:
+      operationId: putV1ReviewsIdReply
+      tags:
+      - Review flow
+      description: Create or update the restaurant reply to the published comment for a given review UUID.
+      parameters:
+      - schema:
+          type: string
+          format: uuid
+          description: UUID of the review to update
+          example: 3fa85f64-5717-4562-b3fc-2c963f66afa6
+        required: true
+        description: UUID of the review to update
+        name: id
+        in: path
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                content:
+                  type: string
+                  minLength: 1
+                  description: Text content of the comment, may include escape sequences
+                language:
+                  type:
+                  - string
+                  - 'null'
+                  pattern: ^[a-z]{2,3}$
+                  description: ISO 639 language code of the comment
+                  example: en
+              required:
+              - content
+              - language
+              additionalProperties: false
+      responses:
+        '200':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  reviewUuid:
+                    type: string
+                    format: uuid
+                    description: UUID of the review
+                    example: 6f5fdab1-c91a-11ef-8d9e-0e8af7bd4d53
+                  restaurantReply:
+                    type:
+                    - object
+                    - 'null'
+                    properties:
+                      content:
+                        type: string
+                        minLength: 1
+                        description: Text content of the comment, may include escape sequences
+                      language:
+                        type:
+                        - string
+                        - 'null'
+                        pattern: ^[a-z]{2,3}$
+                        description: ISO 639 language code of the comment
+                        example: en
+                      publicationStatus:
+                        type: string
+                        enum:
+                        - NOT_REVIEWED
+                        - REJECTED
+                        - PUBLISHED
+                        - WAITING_REFORMULATE
+                        - ARCHIVED
+                        - DELETED
+                        description: Publication status of the comment
+                        example: PUBLISHED
+                      createdTs:
+                        type: string
+                        format: date-time
+                        description: ISO 8601 UTC date and time when the comment was created
+                        example: '2025-01-02T15:01:24.898Z'
+                      updatedTs:
+                        type: string
+                        format: date-time
+                        description: ISO 8601 UTC date and time when the comment was last updated
+                        example: '2025-01-02T15:01:24.898Z'
+                      publishedTs:
+                        type:
+                        - string
+                        - 'null'
+                        format: date-time
+                        description: ISO 8601 UTC date and time when the comment was published
+                        example: '2025-01-02T15:08:58.208Z'
+                      moderationReason:
+                        type:
+                        - string
+                        - 'null'
+                        enum:
+                        - REFORMULATE_REPLY_IRRELEVANT_CONTENT
+                        - REFORMULATE_REPLY_PROFANITY
+                        - REFORMULATE_REPLY_INCORRECT_INFORMATION
+                        - REFORMULATE_REPLY_SPAM
+                        - REFORMULATE_REPLY_THREATENING_LANGUAGE
+                        - REFORMULATE_REPLY_CONFIDENTIAL_TF_INFO
+                        - REFORMULATE_REPLY_PRIVATE_DATA
+                        - REFORMULATE_REPLY_INAPROPRIATE_CONTENT
+                        - REFORMULATE_REPLY_NOT_COMPLIANT
+                        - REFORMULATE_REPLY_VIOLENCE
+                        - REFORMULATE_REPLY_DISCRIMINATORY
+                        - REFORMULATE_REPLY_RESTAURANT_REQUEST
+                        - REFORMULATE_REPLY_HARASSMENT_LANGUAGE
+                        - REFORMULATE_REPLY_INAUTHENTIC
+                        - REFORMULATE_REPLY_ALL_CAPS_UNINTELLIGIBLE_NON_ORIGINAL_CONTENT
+                        - REJECT_REPLY_NOT_COMPLIANT
+                        - REJECT_REPLY_REFORMULATION_PERIOD_ENDED
+                        - REJECT_REPLY_RESTAURANT_REQUEST
+                        description: Moderation reason associated with the comment
+                        example: REFORMULATE_REPLY_SPAM
+                    required:
+                    - content
+                    - language
+                    - publicationStatus
+                    - createdTs
+                    - updatedTs
+                    - publishedTs
+                    - moderationReason
+                    additionalProperties: false
+                    description: Restaurant reply to the customer review
+                required:
+                - reviewUuid
+                - restaurantReply
+                additionalProperties: false
+        '400':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - REVIEW_HAS_NO_PUBLISHED_COMMENT
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Bad Request
+                  statusCode:
+                    type: number
+                    enum:
+                    - 400
+                required:
+                - data
+                - error
+                - statusCode
+        '401':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - ''
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Unauthorized
+                  statusCode:
+                    type: number
+                    enum:
+                    - 401
+                required:
+                - data
+                - error
+                - statusCode
+        '404':
+          description: Object with user data.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: object
+                    properties:
+                      code:
+                        type: string
+                        enum:
+                        - REVIEW_NOT_FOUND
+                    required:
+                    - code
+                  error:
+                    type: string
+                    enum:
+                    - Not Found
+                  statusCode:
+                    type: number
+                    enum:
+                    - 404
+                required:
+                - data
+                - error
+                - statusCode
+      x-source-page: https://docs.thefork.io/B2B-API/API specifications/put-v-1-reviews-id-reply-376
+      x-source-asset: https://docs.thefork.io/assets/js/ac7f4893.7f6baac1.js
