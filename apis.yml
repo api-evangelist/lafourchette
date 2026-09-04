@@ -23,6 +23,23 @@ deliveryModel:
   - pricing
   generated: '2026-08-28'
   method: derived
+accessModel:
+  pricing: enterprise
+  onboarding: self-serve
+  trial: false
+  try_now: false
+  public: false
+  label: Enterprise · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  - scopes
+  - rate-limits
+  - security
+  - sandbox
+  generated: '2026-09-02'
+  method: derived
 image: https://docs.thefork.io/img/thefork_logo_2023_secondary.svg
 url: https://raw.githubusercontent.com/api-evangelist/lafourchette/refs/heads/main/apis.yml
 x-type: company
@@ -236,8 +253,9 @@ common:
   url: packages/lafourchette-packages.yml
 - type: WellKnown
   url: well-known/lafourchette-well-known.yml
-- type: MCPServer
+- type: X-MCPServerCandidate
   url: mcp/lafourchette-mcp.yml
+  note: 'Renamed from MCPServer 2026-09-03 (roadmap#247): the manifest self-describes as status: candidate — a tool list derived from the published API contracts, not an existing server. The scorer already read the manifest and reported mcp_server correctly; the MCPServer type was crediting the artifact-type surfaces with a server that does not exist.'
 - type: LLMsTxt
   url: llms/lafourchette-llms.txt
 - type: Conformance
