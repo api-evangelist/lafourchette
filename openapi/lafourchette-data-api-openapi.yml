@@ -131,6 +131,8 @@ paths:
                 - statusCode
       x-source-page: https://docs.thefork.io/B2B-API/API specifications/get-v-1-customers-eb6
       x-source-asset: https://docs.thefork.io/assets/js/3a1abe1a.3012f03c.js
+      summary: Get V1 customers
+      x-summary-source: derived
   /v1/customers/{id}:
     get:
       operationId: getV1CustomersId
@@ -436,6 +438,8 @@ paths:
                 - statusCode
       x-source-page: https://docs.thefork.io/B2B-API/API specifications/get-v-1-customers-id-11e
       x-source-asset: https://docs.thefork.io/assets/js/bf653d7c.944b4da4.js
+      summary: Get V1 customers id
+      x-summary-source: derived
   /v1/reservations:
     get:
       operationId: getV1Reservations
@@ -572,6 +576,8 @@ paths:
                 - statusCode
       x-source-page: https://docs.thefork.io/B2B-API/API specifications/get-v-1-reservations-60c
       x-source-asset: https://docs.thefork.io/assets/js/c0eb8405.19828b52.js
+      summary: Get V1 reservations
+      x-summary-source: derived
   /v1/reservations/{id}:
     get:
       operationId: getV1ReservationsId
@@ -864,3 +870,5 @@ paths:
                 - statusCode
       x-source-page: https://docs.thefork.io/B2B-API/API specifications/get-v-1-reservations-id-f82
       x-source-asset: https://docs.thefork.io/assets/js/41c4f519.2f982757.js
+      summary: Get V1 reservations id
+      x-summary-source: derived

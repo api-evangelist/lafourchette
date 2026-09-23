@@ -133,6 +133,8 @@ paths:
                 - statusCode
       x-source-page: https://docs.thefork.io/B2B-API/API specifications/get-v-1-reviews-a67
       x-source-asset: https://docs.thefork.io/assets/js/d8d87436.3f8c906a.js
+      summary: Get V1 reviews
+      x-summary-source: derived
   /v1/reviews/{id}:
     get:
       operationId: getV1ReviewsId
@@ -578,6 +580,8 @@ paths:
                 - statusCode
       x-source-page: https://docs.thefork.io/B2B-API/API specifications/get-v-1-reviews-id-edd
       x-source-asset: https://docs.thefork.io/assets/js/1e58232b.59dfff32.js
+      summary: Get V1 reviews id
+      x-summary-source: derived
   /v1/reviews/{id}/reply:
     put:
       operationId: putV1ReviewsIdReply
@@ -797,3 +801,5 @@ paths:
                 - statusCode
       x-source-page: https://docs.thefork.io/B2B-API/API specifications/put-v-1-reviews-id-reply-376
       x-source-asset: https://docs.thefork.io/assets/js/ac7f4893.7f6baac1.js
+      summary: Put V1 reviews id reply
+      x-summary-source: derived

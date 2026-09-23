@@ -1,0 +1,22 @@
+# Front Door AI Index — lafourchette — 2026-09-17
+# AI vocabulary counted on the provider's root page. Generated; do not edit.
+# `score` is null unless ownership is `own` — see front_door_ai.py.
+front_door_ai:
+  slug: lafourchette
+  lexicon_version: '1.0'
+  probed_at: '2026-09-17'
+  host: www.thefork.com
+  final_host: www.thefork.com
+  ownership: shared
+  owner: thefork
+  shares_host_with:
+  - thefork
+  inherited_from: null
+  verdict: unmeasured
+  score: null
+  host_score: null
+  density: null
+  words: null
+  tiers: null
+  ambiguous: null
+  top_terms: null

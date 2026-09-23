@@ -278,6 +278,8 @@ paths:
                 - statusCode
       x-source-page: https://docs.thefork.io/B2B-API/API specifications/patch-v-1-reservations-id-e25
       x-source-asset: https://docs.thefork.io/assets/js/a8fbf7bc.68c6887c.js
+      summary: Patch V1 reservations id
+      x-summary-source: derived
   /v1/reservations/{id}/cancel:
     patch:
       operationId: patchV1ReservationsIdCancel
@@ -473,6 +475,8 @@ paths:
                 - statusCode
       x-source-page: https://docs.thefork.io/B2B-API/API specifications/patch-v-1-reservations-id-cancel-788
       x-source-asset: https://docs.thefork.io/assets/js/9a309802.82545e3e.js
+      summary: Patch V1 reservations id cancel
+      x-summary-source: derived
   /v1/restaurants/{id}/availabilities:
     get:
       operationId: getV1RestaurantsIdAvailabilities
@@ -614,6 +618,8 @@ paths:
                 - statusCode
       x-source-page: https://docs.thefork.io/B2B-API/API specifications/get-v-1-restaurants-id-availabilities-d7b
       x-source-asset: https://docs.thefork.io/assets/js/fac63e84.55151770.js
+      summary: Get V1 restaurants id availabilities
+      x-summary-source: derived
   /v1/restaurants/{id}/availabilities/override:
     put:
       operationId: putV1RestaurantsIdAvailabilitiesOverride
@@ -748,6 +754,8 @@ paths:
                 - statusCode
       x-source-page: https://docs.thefork.io/B2B-API/API specifications/put-v-1-restaurants-id-availabilities-override-909
       x-source-asset: https://docs.thefork.io/assets/js/0f07e7f9.6f0485d0.js
+      summary: Put V1 restaurants id availabilities override
+      x-summary-source: derived
   /v1/restaurants/{id}/offers:
     get:
       operationId: getV1RestaurantsIdOffers
@@ -865,6 +873,8 @@ paths:
                 - statusCode
       x-source-page: https://docs.thefork.io/B2B-API/API specifications/get-v-1-restaurants-id-offers-c32
       x-source-asset: https://docs.thefork.io/assets/js/1e10e7d1.8c45c0f2.js
+      summary: Get V1 restaurants id offers
+      x-summary-source: derived
   /v1/restaurants/{id}/partySizes:
     get:
       operationId: getV1RestaurantsIdPartySizes
@@ -981,6 +991,8 @@ paths:
                 - statusCode
       x-source-page: https://docs.thefork.io/B2B-API/API specifications/get-v-1-restaurants-id-party-sizes-7aa
       x-source-asset: https://docs.thefork.io/assets/js/40f638ec.662078db.js
+      summary: Get V1 restaurants id party sizes
+      x-summary-source: derived
   /v1/restaurants/{id}/reservations:
     post:
       operationId: postV1RestaurantsIdReservations
@@ -1332,6 +1344,8 @@ paths:
                 - statusCode
       x-source-page: https://docs.thefork.io/B2B-API/API specifications/post-v-1-restaurants-id-reservations-26a
       x-source-asset: https://docs.thefork.io/assets/js/5850bee5.184d5e38.js
+      summary: Post V1 restaurants id reservations
+      x-summary-source: derived
   /v1/restaurants/{id}/timeslots:
     get:
       operationId: getV1RestaurantsIdTimeslots
@@ -1507,3 +1521,5 @@ paths:
                 - statusCode
       x-source-page: https://docs.thefork.io/B2B-API/API specifications/get-v-1-restaurants-id-timeslots-064
       x-source-asset: https://docs.thefork.io/assets/js/5050e1a8.abc70081.js
+      summary: Get V1 restaurants id timeslots
+      x-summary-source: derived

@@ -1,0 +1,30 @@
+{
+  "provider": "lafourchette",
+  "sources": [
+    "_original/lafourchette-b2b-api-openapi.yml",
+    "_original/lafourchette-pos-api-openapi.yml"
+  ],
+  "outputs": [
+    "lafourchette-booking-flow-api-openapi.yml",
+    "lafourchette-data-api-openapi.yml",
+    "lafourchette-phone-api-openapi.yml",
+    "lafourchette-review-flow-api-openapi.yml",
+    "lafourchette-v1-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [
+    "sourced from openapi/_original/ (2 archived document(s)); previously refined output at the top level was skipped rather than re-split",
+    "lafourchette-b2b-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "lafourchette-pos-api-openapi.yml: upgraded openapi 3.0.3 -> OpenAPI 3.2.0",
+    "apis.yml register: already-registered"
+  ],
+  "skipped": [
+    "lafourchette-booking-flow-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lafourchette-data-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lafourchette-phone-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lafourchette-review-flow-api-openapi.yml: previously refined output, superseded by openapi/_original/",
+    "lafourchette-v1-api-openapi.yml: previously refined output, superseded by openapi/_original/"
+  ]
+}

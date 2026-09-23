@@ -89,6 +89,8 @@ paths:
       - ApiKeyAuth: []
       x-source-page: https://docs.thefork.io/POS-API/API specifications/post-v-1-create-404
       x-source-asset: https://docs.thefork.io/assets/js/7041dc0c.3707238c.js
+      summary: Post V1 create
+      x-summary-source: derived
   /v1/orders/{orderUuid}:
     put:
       operationId: putV1OrdersOrderuuid
@@ -215,6 +217,8 @@ paths:
       - ApiKeyAuth: []
       x-source-page: https://docs.thefork.io/POS-API/API specifications/put-v-1-orders-orderuuid-e50
       x-source-asset: https://docs.thefork.io/assets/js/d9f95ff6.22e0183b.js
+      summary: Put V1 orders orderuuid
+      x-summary-source: derived
   /v1/{posUuid}/logo:
     put:
       operationId: putV1PosuuidLogo
@@ -274,6 +278,8 @@ paths:
       - ApiKeyAuth: []
       x-source-page: https://docs.thefork.io/POS-API/API specifications/put-v-1-posuuid-logo-bf5
       x-source-asset: https://docs.thefork.io/assets/js/19816ad5.b282cb0e.js
+      summary: Put V1 posuuid logo
+      x-summary-source: derived
 components:
   securitySchemes:
     ApiKeyAuth:

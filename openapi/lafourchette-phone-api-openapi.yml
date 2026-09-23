@@ -115,6 +115,8 @@ paths:
                 - statusCode
       x-source-page: https://docs.thefork.io/B2B-API/API specifications/post-v-1-call-center-call-recognitions-1b7
       x-source-asset: https://docs.thefork.io/assets/js/7640361e.b6bc1108.js
+      summary: Post V1 call center call recognitions
+      x-summary-source: derived
   /v1/integrationStatus:
     patch:
       operationId: patchV1IntegrationStatus
@@ -193,6 +195,8 @@ paths:
                 - statusCode
       x-source-page: https://docs.thefork.io/B2B-API/API specifications/patch-v-1-integration-status-a97
       x-source-asset: https://docs.thefork.io/assets/js/caabd68a.f984be41.js
+      summary: Patch V1 integration status
+      x-summary-source: derived
   /v1/restaurants/{id}/customers/phone/{phoneNumber}:
     get:
       operationId: getV1RestaurantsIdCustomersPhonePhoneNumber
@@ -346,3 +350,5 @@ paths:
                 - statusCode
       x-source-page: https://docs.thefork.io/B2B-API/API specifications/get-v-1-restaurants-id-customers-phone-phone-number-22f
       x-source-asset: https://docs.thefork.io/assets/js/eadad500.93a4a9bd.js
+      summary: Get V1 restaurants id customers phone phone number
+      x-summary-source: derived
